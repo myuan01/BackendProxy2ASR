@@ -1,0 +1,281 @@
+28-01-2021 18:18:24 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:25 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 92.
+28-01-2021 18:18:25 database_and_log.DatabaseHelper [ERR] Parameter 'input_audio' must have its value set
+System.InvalidOperationException: Parameter 'input_audio' must have its value set
+   at Npgsql.NpgsqlParameter.ResolveHandler(ConnectorTypeMapper typeMapper)
+   at Npgsql.NpgsqlCommand.ValidateParameters(ConnectorTypeMapper typeMapper)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at database_and_log.DatabaseHelper.InsertAudioStreamPrediction(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime pred_timestamp, Byte[] input_audio, String input_word, String return_text) in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 108
+28-01-2021 18:18:25 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 92.
+28-01-2021 18:18:25 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:18:28 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:28 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:18:30 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:30 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:18:36 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:36 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:18:37 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:37 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:18:42 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:42 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:18:44 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:44 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:18:48 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:48 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:18:51 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:51 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:18:51 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:51 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:18:55 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:18:55 database_and_log.DatabaseHelper [ERR] Connection already open
+System.InvalidOperationException: Connection already open
+   at Npgsql.NpgsqlConnection.Open(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at database_and_log.DatabaseHelper.Open() in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 51
+28-01-2021 18:18:55 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 75.
+28-01-2021 18:18:55 database_and_log.DatabaseHelper [ERR] Parameter 'input_audio' must have its value set
+System.InvalidOperationException: Parameter 'input_audio' must have its value set
+   at Npgsql.NpgsqlParameter.ResolveHandler(ConnectorTypeMapper typeMapper)
+   at Npgsql.NpgsqlCommand.ValidateParameters(ConnectorTypeMapper typeMapper)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at database_and_log.DatabaseHelper.InsertAudioStreamPrediction(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime pred_timestamp, Byte[] input_audio, String input_word, String return_text) in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 108
+28-01-2021 18:18:55 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 75.
+28-01-2021 18:18:55 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:19:06 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:19:06 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:19:08 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:19:08 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:19:11 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:19:11 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:19:13 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:19:13 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:19:26 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:19:26 database_and_log.DatabaseHelper [ERR] Connection already open
+System.InvalidOperationException: Connection already open
+   at Npgsql.NpgsqlConnection.Open(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at database_and_log.DatabaseHelper.Open() in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 51
+28-01-2021 18:19:26 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 27.
+28-01-2021 18:19:26 database_and_log.DatabaseHelper [ERR] Parameter 'input_audio' must have its value set
+System.InvalidOperationException: Parameter 'input_audio' must have its value set
+   at Npgsql.NpgsqlParameter.ResolveHandler(ConnectorTypeMapper typeMapper)
+   at Npgsql.NpgsqlCommand.ValidateParameters(ConnectorTypeMapper typeMapper)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at database_and_log.DatabaseHelper.InsertAudioStreamPrediction(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime pred_timestamp, Byte[] input_audio, String input_word, String return_text) in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 108
+28-01-2021 18:19:26 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 27.
+28-01-2021 18:19:26 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:19:45 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:19:45 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:19:46 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:19:46 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:19:50 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:19:50 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:19:51 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:19:51 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:28:45 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:28:46 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 72.
+28-01-2021 18:28:46 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:28:46 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 72.
+28-01-2021 18:28:46 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:29:16 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:29:16 database_and_log.DatabaseHelper [ERR] Connection already open
+System.InvalidOperationException: Connection already open
+   at Npgsql.NpgsqlConnection.Open(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at database_and_log.DatabaseHelper.Open() in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 51
+28-01-2021 18:29:16 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 66.
+28-01-2021 18:29:16 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:29:16 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 66.
+28-01-2021 18:29:16 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:29:47 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:29:47 database_and_log.DatabaseHelper [ERR] Connection already open
+System.InvalidOperationException: Connection already open
+   at Npgsql.NpgsqlConnection.Open(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at database_and_log.DatabaseHelper.Open() in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 51
+28-01-2021 18:29:47 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 47.
+28-01-2021 18:29:47 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:29:47 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 47.
+28-01-2021 18:29:47 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:30:33 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:30:34 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 80.
+28-01-2021 18:30:34 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:30:34 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 80.
+28-01-2021 18:30:34 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:31:13 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:31:13 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 58.
+28-01-2021 18:31:13 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:31:13 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 58.
+28-01-2021 18:31:13 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:31:26 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:31:26 database_and_log.DatabaseHelper [INF] Updating prediction for session 90009, seq 58.
+28-01-2021 18:31:26 database_and_log.DatabaseHelper [INF] Database update complete.
+28-01-2021 18:31:26 database_and_log.DatabaseHelper [INF] Updating stream info for session 90009, seq 58.
+28-01-2021 18:31:26 database_and_log.DatabaseHelper [ERR] 42883: procedure public.update_audio_stream_info(text, integer, unknown, unknown, unknown, unknown, timestamp without time zone, bigint) does not exist
+Npgsql.PostgresException (0x80004005): 42883: procedure public.update_audio_stream_info(text, integer, unknown, unknown, unknown, unknown, timestamp without time zone, bigint) does not exist
+   at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at database_and_log.DatabaseHelper.UpdateAudioStreamInfo(String session_id, Int32 seq_id, Nullable`1 user_id, String device_id, Nullable`1 app_id, Nullable`1 proc_start_time, Nullable`1 proc_end_time, Nullable`1 stream_duration) in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 229
+  Exception data:
+    Severity: ERROR
+    SqlState: 42883
+    MessageText: procedure public.update_audio_stream_info(text, integer, unknown, unknown, unknown, unknown, timestamp without time zone, bigint) does not exist
+    Hint: No procedure matches the given name and argument types. You might need to add explicit type casts.
+    Position: 6
+    File: parse_func.c
+    Line: 618
+    Routine: ParseFuncOrColumn
+28-01-2021 18:31:26 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:31:44 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:31:44 database_and_log.DatabaseHelper [ERR] Connection already open
+System.InvalidOperationException: Connection already open
+   at Npgsql.NpgsqlConnection.Open(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at database_and_log.DatabaseHelper.Open() in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 51
+28-01-2021 18:31:44 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 85.
+28-01-2021 18:31:44 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:31:44 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 85.
+28-01-2021 18:31:44 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:31:45 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:31:45 database_and_log.DatabaseHelper [INF] Updating prediction for session 90009, seq 58.
+28-01-2021 18:31:45 database_and_log.DatabaseHelper [INF] Database update complete.
+28-01-2021 18:31:45 database_and_log.DatabaseHelper [INF] Updating stream info for session 90009, seq 58.
+28-01-2021 18:31:45 database_and_log.DatabaseHelper [ERR] 42883: procedure public.update_audio_stream_info(text, integer, unknown, unknown, unknown, unknown, timestamp without time zone, bigint) does not exist
+Npgsql.PostgresException (0x80004005): 42883: procedure public.update_audio_stream_info(text, integer, unknown, unknown, unknown, unknown, timestamp without time zone, bigint) does not exist
+   at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at database_and_log.DatabaseHelper.UpdateAudioStreamInfo(String session_id, Int32 seq_id, Nullable`1 user_id, String device_id, Nullable`1 app_id, Nullable`1 proc_start_time, Nullable`1 proc_end_time, Nullable`1 stream_duration) in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 229
+  Exception data:
+    Severity: ERROR
+    SqlState: 42883
+    MessageText: procedure public.update_audio_stream_info(text, integer, unknown, unknown, unknown, unknown, timestamp without time zone, bigint) does not exist
+    Hint: No procedure matches the given name and argument types. You might need to add explicit type casts.
+    Position: 6
+    File: parse_func.c
+    Line: 618
+    Routine: ParseFuncOrColumn
+28-01-2021 18:31:45 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:32:15 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:32:15 database_and_log.DatabaseHelper [ERR] Connection already open
+System.InvalidOperationException: Connection already open
+   at Npgsql.NpgsqlConnection.Open(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at database_and_log.DatabaseHelper.Open() in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 51
+28-01-2021 18:32:15 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 48.
+28-01-2021 18:32:15 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:32:15 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 48.
+28-01-2021 18:32:15 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:40:19 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:40:20 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 8.
+28-01-2021 18:40:20 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:40:20 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 8.
+28-01-2021 18:40:20 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:40:25 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:40:25 database_and_log.DatabaseHelper [INF] Updating prediction for session 90009, seq 8.
+28-01-2021 18:40:25 database_and_log.DatabaseHelper [INF] Database update complete.
+28-01-2021 18:40:25 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:40:32 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:40:32 database_and_log.DatabaseHelper [INF] Updating prediction for session 90009, seq 8.
+28-01-2021 18:40:32 database_and_log.DatabaseHelper [INF] Database update complete.
+28-01-2021 18:40:32 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:40:37 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:40:37 database_and_log.DatabaseHelper [INF] Updating prediction for session 90009, seq 8.
+28-01-2021 18:40:37 database_and_log.DatabaseHelper [INF] Database update complete.
+28-01-2021 18:40:37 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:40:43 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:40:43 database_and_log.DatabaseHelper [INF] Updating prediction for session 90009, seq 8.
+28-01-2021 18:40:43 database_and_log.DatabaseHelper [INF] Database update complete.
+28-01-2021 18:40:43 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:40:50 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:40:50 database_and_log.DatabaseHelper [ERR] Connection already open
+System.InvalidOperationException: Connection already open
+   at Npgsql.NpgsqlConnection.Open(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at database_and_log.DatabaseHelper.Open() in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 51
+28-01-2021 18:40:50 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 8.
+28-01-2021 18:40:50 database_and_log.DatabaseHelper [ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+   at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at database_and_log.DatabaseHelper.InsertAudioStreamPrediction(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime pred_timestamp, Byte[] input_audio, String input_word, String return_text) in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 108
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    Where: SQL function "insert_audio_stream_prediction" statement 3
+    SchemaName: public
+    TableName: asr_audio_stream_prediction
+    ConstraintName: asr_audio_stream_prediction_pkey
+    File: nbtinsert.c
+    Line: 656
+    Routine: _bt_check_unique
+28-01-2021 18:40:50 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 8.
+28-01-2021 18:40:50 database_and_log.DatabaseHelper [ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+   at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at database_and_log.DatabaseHelper.InsertAudioStreamInfo(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime proc_start_time, DateTime proc_end_time, Int64 stream_duration) in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 147
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    Where: SQL function "insert_audio_stream_info" statement 3
+    SchemaName: public
+    TableName: asr_audio_stream_info
+    ConstraintName: asr_audio_stream_info_pkey
+    File: nbtinsert.c
+    Line: 656
+    Routine: _bt_check_unique
+28-01-2021 18:40:51 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:40:51 database_and_log.DatabaseHelper [INF] Updating prediction for session 90009, seq 8.
+28-01-2021 18:40:51 database_and_log.DatabaseHelper [INF] Database update complete.
+28-01-2021 18:40:51 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:40:57 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:40:57 database_and_log.DatabaseHelper [INF] Updating prediction for session 90009, seq 8.
+28-01-2021 18:40:57 database_and_log.DatabaseHelper [INF] Database update complete.
+28-01-2021 18:40:57 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:41:05 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:41:05 database_and_log.DatabaseHelper [INF] Updating prediction for session 90009, seq 8.
+28-01-2021 18:41:05 database_and_log.DatabaseHelper [INF] Database update complete.
+28-01-2021 18:41:05 database_and_log.DatabaseHelper [INF] Closing database connection...
+28-01-2021 18:41:21 database_and_log.DatabaseHelper [INF] Opening database connection...
+28-01-2021 18:41:21 database_and_log.DatabaseHelper [ERR] Connection already open
+System.InvalidOperationException: Connection already open
+   at Npgsql.NpgsqlConnection.Open(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.Open()
+   at database_and_log.DatabaseHelper.Open() in C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\DatabaseHelper.cs:line 51
+28-01-2021 18:41:21 database_and_log.DatabaseHelper [INF] Storing prediction for session 90009, seq 93.
+28-01-2021 18:41:21 database_and_log.DatabaseHelper [INF] Database insertion complete.
+28-01-2021 18:41:21 database_and_log.DatabaseHelper [INF] Storing stream info for session 90009, seq 93.
+28-01-2021 18:41:21 database_and_log.DatabaseHelper [INF] Database insertion complete.

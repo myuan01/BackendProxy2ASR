@@ -1,0 +1,16 @@
+C:\admin\Fleck-master\src\Fleck\bin\Debug\net45\Fleck.dll
+C:\admin\Fleck-master\src\Fleck\bin\Debug\net45\Fleck.pdb
+C:\admin\Fleck-master\src\Fleck\obj\Debug\net45\Fleck.csprojAssemblyReference.cache
+C:\admin\Fleck-master\src\Fleck\obj\Debug\net45\Fleck.AssemblyInfoInputs.cache
+C:\admin\Fleck-master\src\Fleck\obj\Debug\net45\Fleck.AssemblyInfo.cs
+C:\admin\Fleck-master\src\Fleck\obj\Debug\net45\Fleck.csproj.CoreCompileInputs.cache
+C:\admin\Fleck-master\src\Fleck\obj\Debug\net45\Fleck.dll
+C:\admin\Fleck-master\src\Fleck\obj\Debug\net45\Fleck.pdb
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\bin\Debug\net45\Fleck.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\bin\Debug\net45\Fleck.pdb
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\net45\Fleck.csprojAssemblyReference.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\net45\Fleck.AssemblyInfoInputs.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\net45\Fleck.AssemblyInfo.cs
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\net45\Fleck.csproj.CoreCompileInputs.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\net45\Fleck.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\net45\Fleck.pdb

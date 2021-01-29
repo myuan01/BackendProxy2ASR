@@ -1,0 +1,9 @@
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\bin\Debug\netcoreapp3.1\Fleck.deps.json
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\bin\Debug\netcoreapp3.1\Fleck.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\bin\Debug\netcoreapp3.1\Fleck.pdb
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\netcoreapp3.1\Fleck.csprojAssemblyReference.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\netcoreapp3.1\Fleck.AssemblyInfoInputs.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\netcoreapp3.1\Fleck.AssemblyInfo.cs
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\netcoreapp3.1\Fleck.csproj.CoreCompileInputs.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\netcoreapp3.1\Fleck.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\Fleck\obj\Debug\netcoreapp3.1\Fleck.pdb

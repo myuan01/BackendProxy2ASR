@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "BackendProxy2ASR": {
+      "commandName": "Project",
+      "commandLineArgs": "8088 localhost 7000 16000"
+    }
+  }
+}

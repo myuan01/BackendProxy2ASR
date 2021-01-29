@@ -1,0 +1,56 @@
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\bin\Debug\netcoreapp3.1\BackendProxy2ASR.exe
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\bin\Debug\netcoreapp3.1\BackendProxy2ASR.deps.json
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\bin\Debug\netcoreapp3.1\BackendProxy2ASR.runtimeconfig.json
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\bin\Debug\netcoreapp3.1\BackendProxy2ASR.runtimeconfig.dev.json
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\bin\Debug\netcoreapp3.1\BackendProxy2ASR.dll
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\bin\Debug\netcoreapp3.1\BackendProxy2ASR.pdb
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\bin\Debug\netcoreapp3.1\Fleck.dll
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\obj\Debug\netcoreapp3.1\BackendProxy2ASR.csprojAssemblyReference.cache
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\obj\Debug\netcoreapp3.1\BackendProxy2ASR.AssemblyInfoInputs.cache
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\obj\Debug\netcoreapp3.1\BackendProxy2ASR.AssemblyInfo.cs
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\obj\Debug\netcoreapp3.1\BackendProxy2ASR.csproj.CoreCompileInputs.cache
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\obj\Debug\netcoreapp3.1\BackendProxy2ASR.csproj.CopyComplete
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\obj\Debug\netcoreapp3.1\BackendProxy2ASR.dll
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\obj\Debug\netcoreapp3.1\BackendProxy2ASR.pdb
+C:\Users\mayuan\Desktop\AI models\ASR\BackendWebSocketApp\obj\Debug\netcoreapp3.1\BackendProxy2ASR.genruntimeconfig.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\BackendProxy2ASR.exe
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\BackendProxy2ASR.deps.json
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\BackendProxy2ASR.runtimeconfig.json
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\BackendProxy2ASR.runtimeconfig.dev.json
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\BackendProxy2ASR.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\BackendProxy2ASR.pdb
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Fleck.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Fleck.pdb
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\obj\Debug\netcoreapp3.1\BackendProxy2ASR.csprojAssemblyReference.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\obj\Debug\netcoreapp3.1\BackendProxy2ASR.AssemblyInfoInputs.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\obj\Debug\netcoreapp3.1\BackendProxy2ASR.AssemblyInfo.cs
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\obj\Debug\netcoreapp3.1\BackendProxy2ASR.csproj.CoreCompileInputs.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\obj\Debug\netcoreapp3.1\BackendProxy2ASR.csproj.CopyComplete
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\obj\Debug\netcoreapp3.1\BackendProxy2ASR.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\obj\Debug\netcoreapp3.1\BackendProxy2ASR.pdb
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\obj\Debug\netcoreapp3.1\BackendProxy2ASR.genruntimeconfig.cache
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\database_and_log.exe
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.FileExtensions.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Json.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyModel.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Physical.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Npgsql.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Serilog.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Serilog.Settings.Configuration.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Serilog.Sinks.Console.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\Serilog.Sinks.File.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\System.Text.Json.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\database_and_log.dll
+C:\Users\mayuan\source\repos\BackendProxy2ASR\BackendProxy2ASR\bin\Debug\netcoreapp3.1\database_and_log.pdb
