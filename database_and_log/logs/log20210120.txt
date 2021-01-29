@@ -1,0 +1,30 @@
+20-01-2021 15:07:33 [DatabaseHelper:INF] Opening database connection...
+20-01-2021 15:07:34 [dotnet_postgres.Program:INF] Opening connection success? : True
+20-01-2021 15:07:34 [DatabaseHelper:INF] Storing prediction for session session_id_3, seq 7.
+20-01-2021 15:07:34 [DatabaseHelper:ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+20-01-2021 15:07:34 [DatabaseHelper:INF] Storing stream info for session session_id_3, seq 7.
+20-01-2021 15:07:34 [DatabaseHelper:ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+20-01-2021 15:07:34 [DatabaseHelper:INF] Reading audio info for session session_id_3, seq 7.
+20-01-2021 15:07:34 [DatabaseHelper:INF] Writing audio file to ./output.wav
+20-01-2021 15:07:34 [DatabaseHelper:INF] Closing database connection...
+20-01-2021 15:07:34 [dotnet_postgres.Program:INF] Closing connection success? : True
+20-01-2021 15:09:06 [DatabaseHelper:INF] Opening database connection...
+20-01-2021 15:09:06 [dotnet_postgres.Program:INF] Opening connection success? : True
+20-01-2021 15:09:06 [DatabaseHelper:INF] Storing prediction for session session_id_3, seq 8.
+20-01-2021 15:09:06 [DatabaseHelper:INF] Database insertion complete.
+20-01-2021 15:09:06 [DatabaseHelper:INF] Storing stream info for session session_id_3, seq 8.
+20-01-2021 15:09:06 [DatabaseHelper:INF] Database insertion complete.
+20-01-2021 15:09:06 [DatabaseHelper:INF] Reading audio info for session session_id_3, seq 8.
+20-01-2021 15:09:06 [DatabaseHelper:INF] Writing audio file to ./output.wav
+20-01-2021 15:09:06 [DatabaseHelper:INF] Closing database connection...
+20-01-2021 15:09:06 [dotnet_postgres.Program:INF] Closing connection success? : True
+20-01-2021 15:21:39 [DatabaseHelper:INF] Opening database connection...
+20-01-2021 15:21:39 [dotnet_postgres.Program:INF] Opening connection success? : True
+20-01-2021 15:21:39 [DatabaseHelper:INF] Storing prediction for session session_id_3, seq 8.
+20-01-2021 15:21:39 [DatabaseHelper:ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+20-01-2021 15:21:39 [DatabaseHelper:INF] Storing stream info for session session_id_3, seq 8.
+20-01-2021 15:21:39 [DatabaseHelper:ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+20-01-2021 15:21:39 [DatabaseHelper:INF] Reading audio info for session session_id_3, seq 8.
+20-01-2021 15:21:39 [DatabaseHelper:INF] Writing audio file to ./output.wav
+20-01-2021 15:21:39 [DatabaseHelper:INF] Closing database connection...
+20-01-2021 15:21:39 [dotnet_postgres.Program:INF] Closing connection success? : True

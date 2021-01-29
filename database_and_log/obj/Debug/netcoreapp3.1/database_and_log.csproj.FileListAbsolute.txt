@@ -1,0 +1,70 @@
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/database_and_log
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/database_and_log.deps.json
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/database_and_log.runtimeconfig.json
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/database_and_log.runtimeconfig.dev.json
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/database_and_log.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/database_and_log.pdb
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.DotNet.PlatformAbstractions.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.Abstractions.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.Binder.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.FileExtensions.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Configuration.Json.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.DependencyInjection.Abstractions.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.DependencyModel.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.FileProviders.Abstractions.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.FileProviders.Physical.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.FileSystemGlobbing.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Options.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Options.ConfigurationExtensions.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Microsoft.Extensions.Primitives.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Newtonsoft.Json.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Npgsql.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Serilog.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Serilog.Settings.Configuration.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Serilog.Sinks.Console.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/Serilog.Sinks.File.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/bin/Debug/netcoreapp3.1/System.Text.Json.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/obj/Debug/netcoreapp3.1/database_and_log.csprojAssemblyReference.cache
+/home/kohkb/Desktop/ASTAR/database_and_log/obj/Debug/netcoreapp3.1/database_and_log.AssemblyInfoInputs.cache
+/home/kohkb/Desktop/ASTAR/database_and_log/obj/Debug/netcoreapp3.1/database_and_log.AssemblyInfo.cs
+/home/kohkb/Desktop/ASTAR/database_and_log/obj/Debug/netcoreapp3.1/database_and_log.csproj.CoreCompileInputs.cache
+/home/kohkb/Desktop/ASTAR/database_and_log/obj/Debug/netcoreapp3.1/database_and_log.csproj.CopyComplete
+/home/kohkb/Desktop/ASTAR/database_and_log/obj/Debug/netcoreapp3.1/database_and_log.dll
+/home/kohkb/Desktop/ASTAR/database_and_log/obj/Debug/netcoreapp3.1/database_and_log.pdb
+/home/kohkb/Desktop/ASTAR/database_and_log/obj/Debug/netcoreapp3.1/database_and_log.genruntimeconfig.cache
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\database_and_log.exe
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\database_and_log.deps.json
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\database_and_log.runtimeconfig.json
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\database_and_log.runtimeconfig.dev.json
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\database_and_log.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\database_and_log.pdb
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.DotNet.PlatformAbstractions.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Abstractions.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Binder.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.FileExtensions.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Configuration.Json.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyInjection.Abstractions.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.DependencyModel.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Abstractions.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileProviders.Physical.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.FileSystemGlobbing.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Options.ConfigurationExtensions.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Microsoft.Extensions.Primitives.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Newtonsoft.Json.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Npgsql.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Serilog.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Serilog.Settings.Configuration.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Serilog.Sinks.Console.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\Serilog.Sinks.File.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\bin\Debug\netcoreapp3.1\System.Text.Json.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\obj\Debug\netcoreapp3.1\database_and_log.csprojAssemblyReference.cache
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\obj\Debug\netcoreapp3.1\database_and_log.AssemblyInfoInputs.cache
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\obj\Debug\netcoreapp3.1\database_and_log.AssemblyInfo.cs
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\obj\Debug\netcoreapp3.1\database_and_log.csproj.CoreCompileInputs.cache
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\obj\Debug\netcoreapp3.1\database_and_log.csproj.CopyComplete
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\obj\Debug\netcoreapp3.1\database_and_log.dll
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\obj\Debug\netcoreapp3.1\database_and_log.pdb
+C:\Users\mayuan\Desktop\AI models\ASR\database_and_log\obj\Debug\netcoreapp3.1\database_and_log.genruntimeconfig.cache

@@ -1,0 +1,255 @@
+21-01-2021 13:49:21 [DatabaseHelper:INF] Opening database connection...
+21-01-2021 13:49:21 [DatabaseHelper:ERR] Exception while connecting
+21-01-2021 13:49:21 [dotnet_postgres.Program:INF] Opening connection success? : False
+21-01-2021 13:49:21 [DatabaseHelper:INF] Closing database connection...
+21-01-2021 13:49:21 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 13:52:09 [DatabaseHelper:INF] Opening database connection...
+21-01-2021 13:52:09 [DatabaseHelper:ERR] Exception while connecting
+21-01-2021 13:52:09 [dotnet_postgres.Program:INF] Opening connection success? : False
+21-01-2021 13:52:09 [DatabaseHelper:INF] Closing database connection...
+21-01-2021 13:52:09 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 13:52:16 [DatabaseHelper:INF] Opening database connection...
+21-01-2021 13:52:16 [DatabaseHelper:ERR] Exception while connecting
+21-01-2021 13:52:16 [dotnet_postgres.Program:INF] Opening connection success? : False
+21-01-2021 13:52:16 [DatabaseHelper:INF] Closing database connection...
+21-01-2021 13:52:16 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 13:53:28 [DatabaseHelper:INF] Opening database connection...
+21-01-2021 13:53:29 [DatabaseHelper:ERR] Exception while connecting
+21-01-2021 13:53:29 [dotnet_postgres.Program:INF] Opening connection success? : False
+21-01-2021 13:53:29 [DatabaseHelper:INF] Closing database connection...
+21-01-2021 13:53:29 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 13:57:52 [DatabaseHelper:INF] Opening database connection...
+21-01-2021 13:57:52 [DatabaseHelper:ERR] Exception while connecting
+21-01-2021 13:57:52 [dotnet_postgres.Program:INF] Opening connection success? : False
+21-01-2021 13:57:52 [DatabaseHelper:INF] Closing database connection...
+21-01-2021 13:57:52 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 13:58:32 [DatabaseHelper:INF] Opening database connection...
+21-01-2021 13:58:32 [DatabaseHelper:ERR] Exception while connecting
+Npgsql.NpgsqlException (0x80004005): Exception while connecting
+ ---> System.Net.Sockets.SocketException (111): Connection refused
+   at Npgsql.NpgsqlConnector.Connect(NpgsqlTimeout timeout)
+   at Npgsql.NpgsqlConnector.Connect(NpgsqlTimeout timeout)
+   at Npgsql.NpgsqlConnector.RawOpen(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.ConnectorPool.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Npgsql.NpgsqlConnection.<>c__DisplayClass41_0.<<Open>g__OpenAsync|0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Npgsql.NpgsqlConnection.Open()
+   at DatabaseHelper.Open() in /home/kohkb/Desktop/ASTAR/dotnet-postgres/DatabaseHelper.cs:line 45
+21-01-2021 13:58:32 [dotnet_postgres.Program:INF] Opening connection success? : False
+21-01-2021 13:58:32 [DatabaseHelper:INF] Closing database connection...
+21-01-2021 13:58:32 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 13:59:47 [DatabaseHelper:INF] Opening database connection...
+21-01-2021 13:59:47 [DatabaseHelper:ERR] Exception while connecting
+Npgsql.NpgsqlException (0x80004005): Exception while connecting
+ ---> System.Net.Sockets.SocketException (111): Connection refused
+   at Npgsql.NpgsqlConnector.Connect(NpgsqlTimeout timeout)
+   at Npgsql.NpgsqlConnector.Connect(NpgsqlTimeout timeout)
+   at Npgsql.NpgsqlConnector.RawOpen(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.ConnectorPool.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Npgsql.NpgsqlConnection.<>c__DisplayClass41_0.<<Open>g__OpenAsync|0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Npgsql.NpgsqlConnection.Open()
+   at DatabaseHelper.Open() in /home/kohkb/Desktop/ASTAR/dotnet-postgres/DatabaseHelper.cs:line 45
+21-01-2021 13:59:47 [dotnet_postgres.Program:INF] Opening connection success? : False
+21-01-2021 13:59:47 [DatabaseHelper:INF] Closing database connection...
+21-01-2021 13:59:47 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 14:17:52 [DatabaseHelper:INF] Opening database connection...
+21-01-2021 14:17:52 [DatabaseHelper:ERR] Exception while connecting
+Npgsql.NpgsqlException (0x80004005): Exception while connecting
+ ---> System.Net.Sockets.SocketException (111): Connection refused
+   at Npgsql.NpgsqlConnector.Connect(NpgsqlTimeout timeout)
+   at Npgsql.NpgsqlConnector.Connect(NpgsqlTimeout timeout)
+   at Npgsql.NpgsqlConnector.RawOpen(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.ConnectorPool.OpenNewConnector(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.ConnectorPool.<>c__DisplayClass38_0.<<Rent>g__RentAsync|0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Npgsql.NpgsqlConnection.<>c__DisplayClass41_0.<<Open>g__OpenAsync|0>d.MoveNext()
+--- End of stack trace from previous location where exception was thrown ---
+   at Npgsql.NpgsqlConnection.Open()
+   at DatabaseHelper.Open() in /home/kohkb/Desktop/ASTAR/dotnet-postgres/DatabaseHelper.cs:line 49
+21-01-2021 14:17:52 [dotnet_postgres.Program:INF] Opening connection success? : False
+21-01-2021 14:17:52 [DatabaseHelper:INF] Closing database connection...
+21-01-2021 14:17:52 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 14:18:36 [DatabaseHelper:INF] Opening database connection...
+21-01-2021 14:18:37 [dotnet_postgres.Program:INF] Opening connection success? : True
+21-01-2021 14:18:37 [DatabaseHelper:INF] Storing prediction for session session_id_3, seq 8.
+21-01-2021 14:18:37 [DatabaseHelper:ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+   at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at DatabaseHelper.InsertAudioStreamPrediction(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime pred_timestamp, Byte[] input_audio, String input_word, String return_text) in /home/kohkb/Desktop/ASTAR/dotnet-postgres/DatabaseHelper.cs:line 106
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    Where: SQL function "insert_audio_stream_prediction" statement 1
+    SchemaName: public
+    TableName: asr_audio_stream_prediction
+    ConstraintName: asr_audio_stream_prediction_pkey
+    File: nbtinsert.c
+    Line: 656
+    Routine: _bt_check_unique
+21-01-2021 14:18:37 [DatabaseHelper:INF] Storing stream info for session session_id_3, seq 8.
+21-01-2021 14:18:37 [DatabaseHelper:ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+   at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at DatabaseHelper.InsertAudioStreamInfo(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime proc_start_time, DateTime proc_end_time, Int64 stream_duration) in /home/kohkb/Desktop/ASTAR/dotnet-postgres/DatabaseHelper.cs:line 145
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    Where: SQL function "insert_audio_stream_info" statement 1
+    SchemaName: public
+    TableName: asr_audio_stream_info
+    ConstraintName: asr_audio_stream_info_pkey
+    File: nbtinsert.c
+    Line: 656
+    Routine: _bt_check_unique
+21-01-2021 14:18:37 [DatabaseHelper:INF] Reading audio info for session session_id_3, seq 8.
+21-01-2021 14:18:37 [DatabaseHelper:INF] Writing audio file to ./output.wav
+21-01-2021 14:18:37 [DatabaseHelper:INF] Closing database connection...
+21-01-2021 14:18:37 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 14:19:10 [DatabaseHelper:INF] Opening database connection...
+21-01-2021 14:19:10 [dotnet_postgres.Program:INF] Opening connection success? : True
+21-01-2021 14:19:10 [DatabaseHelper:INF] Storing prediction for session session_id_3, seq 9.
+21-01-2021 14:19:10 [DatabaseHelper:INF] Database insertion complete.
+21-01-2021 14:19:10 [DatabaseHelper:INF] Storing stream info for session session_id_3, seq 9.
+21-01-2021 14:19:10 [DatabaseHelper:INF] Database insertion complete.
+21-01-2021 14:19:10 [DatabaseHelper:INF] Reading audio info for session session_id_3, seq 9.
+21-01-2021 14:19:10 [DatabaseHelper:INF] Writing audio file to ./output.wav
+21-01-2021 14:19:10 [DatabaseHelper:INF] Closing database connection...
+21-01-2021 14:19:10 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 16:36:13 [dotnet_postgres.DatabaseHelper:INF] Opening database connection...
+21-01-2021 16:36:13 [dotnet_postgres.Program:INF] Opening connection success? : True
+21-01-2021 16:36:13 [dotnet_postgres.DatabaseHelper:INF] Storing prediction for session session_id_3, seq 9.
+21-01-2021 16:36:13 [dotnet_postgres.DatabaseHelper:ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+   at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at dotnet_postgres.DatabaseHelper.InsertAudioStreamPrediction(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime pred_timestamp, Byte[] input_audio, String input_word, String return_text) in /home/kohkb/Desktop/ASTAR/dotnet-postgres/DatabaseHelper.cs:line 109
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    Where: SQL function "insert_audio_stream_prediction" statement 1
+    SchemaName: public
+    TableName: asr_audio_stream_prediction
+    ConstraintName: asr_audio_stream_prediction_pkey
+    File: nbtinsert.c
+    Line: 656
+    Routine: _bt_check_unique
+21-01-2021 16:36:13 [dotnet_postgres.DatabaseHelper:INF] Storing stream info for session session_id_3, seq 9.
+21-01-2021 16:36:13 [dotnet_postgres.DatabaseHelper:ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+   at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at dotnet_postgres.DatabaseHelper.InsertAudioStreamInfo(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime proc_start_time, DateTime proc_end_time, Int64 stream_duration) in /home/kohkb/Desktop/ASTAR/dotnet-postgres/DatabaseHelper.cs:line 148
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    Where: SQL function "insert_audio_stream_info" statement 1
+    SchemaName: public
+    TableName: asr_audio_stream_info
+    ConstraintName: asr_audio_stream_info_pkey
+    File: nbtinsert.c
+    Line: 656
+    Routine: _bt_check_unique
+21-01-2021 16:36:13 [dotnet_postgres.DatabaseHelper:INF] Reading audio info for session session_id_3, seq 9.
+21-01-2021 16:36:13 [dotnet_postgres.DatabaseHelper:INF] Writing audio file to ./output.wav
+21-01-2021 16:36:13 [dotnet_postgres.DatabaseHelper:INF] Closing database connection...
+21-01-2021 16:36:13 [dotnet_postgres.Program:INF] Closing connection success? : True
+21-01-2021 16:38:03 dotnet_postgres.DatabaseHelper [INF] Opening database connection...
+21-01-2021 16:38:03 dotnet_postgres.Program [INF] Opening connection success? : True
+21-01-2021 16:38:03 dotnet_postgres.DatabaseHelper [INF] Storing prediction for session session_id_3, seq 9.
+21-01-2021 16:38:03 dotnet_postgres.DatabaseHelper [ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+   at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at dotnet_postgres.DatabaseHelper.InsertAudioStreamPrediction(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime pred_timestamp, Byte[] input_audio, String input_word, String return_text) in /home/kohkb/Desktop/ASTAR/dotnet-postgres/DatabaseHelper.cs:line 109
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "asr_audio_stream_prediction_pkey"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    Where: SQL function "insert_audio_stream_prediction" statement 1
+    SchemaName: public
+    TableName: asr_audio_stream_prediction
+    ConstraintName: asr_audio_stream_prediction_pkey
+    File: nbtinsert.c
+    Line: 656
+    Routine: _bt_check_unique
+21-01-2021 16:38:03 dotnet_postgres.DatabaseHelper [INF] Storing stream info for session session_id_3, seq 9.
+21-01-2021 16:38:03 dotnet_postgres.DatabaseHelper [ERR] 23505: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+Npgsql.PostgresException (0x80004005): 23505: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+   at Npgsql.NpgsqlConnector.<ReadMessage>g__ReadMessageLong|194_0(NpgsqlConnector connector, Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at Npgsql.NpgsqlDataReader.NextResult(Boolean async, Boolean isConsuming, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlDataReader.NextResult()
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteReader(CommandBehavior behavior, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlCommand.ExecuteNonQuery()
+   at dotnet_postgres.DatabaseHelper.InsertAudioStreamInfo(Int32 user_id, String device_id, String session_id, Int32 seq_id, Int32 app_id, DateTime proc_start_time, DateTime proc_end_time, Int64 stream_duration) in /home/kohkb/Desktop/ASTAR/dotnet-postgres/DatabaseHelper.cs:line 148
+  Exception data:
+    Severity: ERROR
+    SqlState: 23505
+    MessageText: duplicate key value violates unique constraint "asr_audio_stream_info_pkey"
+    Detail: Detail redacted as it may contain sensitive data. Specify 'Include Error Detail' in the connection string to include this information.
+    Where: SQL function "insert_audio_stream_info" statement 1
+    SchemaName: public
+    TableName: asr_audio_stream_info
+    ConstraintName: asr_audio_stream_info_pkey
+    File: nbtinsert.c
+    Line: 656
+    Routine: _bt_check_unique
+21-01-2021 16:38:03 dotnet_postgres.DatabaseHelper [INF] Reading audio info for session session_id_3, seq 9.
+21-01-2021 16:38:03 dotnet_postgres.DatabaseHelper [INF] Writing audio file to ./output.wav
+21-01-2021 16:38:03 dotnet_postgres.DatabaseHelper [INF] Closing database connection...
+21-01-2021 16:38:03 dotnet_postgres.Program [INF] Closing connection success? : True
+21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Opening database connection...
+21-01-2021 16:50:23 database_and_log.Program [INF] Opening connection success? : True
+21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Storing prediction for session session_id_3, seq 10.
+21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Database insertion complete.
+21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Storing stream info for session session_id_3, seq 10.
+21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Database insertion complete.
+21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Reading audio info for session session_id_3, seq 10.
+21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Writing audio file to ./output.wav
+21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Closing database connection...
+21-01-2021 16:50:23 database_and_log.Program [INF] Closing connection success? : True

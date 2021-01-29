@@ -1,0 +1,10 @@
+25-01-2021 15:47:55 database_and_log.DatabaseHelper [INF] Opening database connection...
+25-01-2021 15:47:55 database_and_log.Program [INF] Opening connection success? : True
+25-01-2021 15:47:55 database_and_log.DatabaseHelper [INF] Storing prediction for session session_id_3, seq 10.
+25-01-2021 15:47:55 database_and_log.DatabaseHelper [INF] Database insertion complete.
+25-01-2021 15:47:55 database_and_log.DatabaseHelper [INF] Storing stream info for session session_id_3, seq 10.
+25-01-2021 15:47:56 database_and_log.DatabaseHelper [INF] Database insertion complete.
+25-01-2021 15:47:56 database_and_log.DatabaseHelper [INF] Reading audio info for session session_id_3, seq 10.
+25-01-2021 15:47:56 database_and_log.DatabaseHelper [INF] Writing audio file to ./output.wav
+25-01-2021 15:47:56 database_and_log.DatabaseHelper [INF] Closing database connection...
+25-01-2021 15:47:56 database_and_log.Program [INF] Closing connection success? : True
