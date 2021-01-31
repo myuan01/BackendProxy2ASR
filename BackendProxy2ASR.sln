@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30907.101
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BackendProxy2ASR", "BackendProxy2ASR\BackendProxy2ASR.csproj", "{279507F4-430E-44BD-9185-92BF74C54B4C}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fleck", "Fleck\Fleck.csproj", "{DB47131C-EEDB-482C-A061-B76369B82161}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "database_and_log", "database_and_log\database_and_log.csproj", "{132DA16D-5385-4FE9-AD05-D4F0C131AE78}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{279507F4-430E-44BD-9185-92BF74C54B4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{279507F4-430E-44BD-9185-92BF74C54B4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{279507F4-430E-44BD-9185-92BF74C54B4C}.Debug|x64.ActiveCfg = Debug|x64
+		{279507F4-430E-44BD-9185-92BF74C54B4C}.Debug|x64.Build.0 = Debug|x64
+		{279507F4-430E-44BD-9185-92BF74C54B4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{279507F4-430E-44BD-9185-92BF74C54B4C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{279507F4-430E-44BD-9185-92BF74C54B4C}.Release|x64.ActiveCfg = Release|x64
+		{279507F4-430E-44BD-9185-92BF74C54B4C}.Release|x64.Build.0 = Release|x64
+		{DB47131C-EEDB-482C-A061-B76369B82161}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB47131C-EEDB-482C-A061-B76369B82161}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB47131C-EEDB-482C-A061-B76369B82161}.Debug|x64.ActiveCfg = Debug|x64
+		{DB47131C-EEDB-482C-A061-B76369B82161}.Debug|x64.Build.0 = Debug|x64
+		{DB47131C-EEDB-482C-A061-B76369B82161}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB47131C-EEDB-482C-A061-B76369B82161}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB47131C-EEDB-482C-A061-B76369B82161}.Release|x64.ActiveCfg = Release|x64
+		{DB47131C-EEDB-482C-A061-B76369B82161}.Release|x64.Build.0 = Release|x64
+		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Debug|x64.Build.0 = Debug|Any CPU
+		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Release|x64.ActiveCfg = Release|Any CPU
+		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Release|x64.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {14BC079C-5020-44CE-81B0-F6F87EE3C6F2}
+	EndGlobalSection
+EndGlobal
