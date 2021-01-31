@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "database_and_log": {
-      "commandName": "Project",
-      "commandLineArgs": "./sample_input.wav ./output.wav"
-    }
-  }
-}
