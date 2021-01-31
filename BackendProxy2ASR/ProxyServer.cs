@@ -33,7 +33,8 @@ namespace BackendProxy2ASR
         //private DatabaseHelper dbhelper = null;
         private Dictionary<String, SessionHelper> m_sessionID2Helper;
 
-        private DatabaseHelper databaseHelper = new DatabaseHelper("./config.json");
+        private DatabaseHelper databaseHelper = new DatabaseHelper("../config.json");
+        private ILogger _logger = new LogHelper<ProxyASR>("../config.json").Logger;
 
         //--------------------------------------------------------------------->
         // C'TOR: initialize member variables
@@ -72,7 +73,8 @@ namespace BackendProxy2ASR
             //bool connectionResult = dbhelper.Open();
             //Console.WriteLine("Opening connection success? : " + connectionResult.ToString());
 
-            Console.WriteLine("port: " + m_proxyPort + "  samplerate: " + m_sampleRate);
+            _logger.Information("Starting Fleck WebSocket Server...");
+            _logger.Information("port: " + m_proxyPort + "  samplerate: " + m_sampleRate);
 
             server.Start(socket =>
                 {
@@ -104,7 +106,7 @@ namespace BackendProxy2ASR
         //--------------------------------------------------------------------->
         private void OnConnect(IWebSocketConnection sock)
         {
-            Console.WriteLine("WS Connect...");
+            _logger.Information("WS Connect...");
             var session = new SessionHelper();
             sock.Send("0{\"session_id\":" + session.m_sessionID + "}");
             m_sessionID2Helper[session.m_sessionID] = session;
@@ -116,7 +118,7 @@ namespace BackendProxy2ASR
         //--------------------------------------------------------------------->
         private void OnDisconnect(IWebSocketConnection sock)
         {
-            Console.WriteLine("WS Disconnect...");
+            _logger.Information("WS Disconnect...");
             // Disconnect from ASR engine
             var session_id = m_sock2sessionID[sock];
             m_commASR.DisconnectASR(session_id);
@@ -129,20 +131,20 @@ namespace BackendProxy2ASR
         private void OnMessage(IWebSocketConnection sock, String msg)
         {
             Console.OutputEncoding = Encoding.UTF8;
-            Console.WriteLine(msg);
+            _logger.Information(msg);
 
             sock.Send("Echo: " + msg);
 
             if (msg.Contains("right_text")==false || msg.Contains("session_id")==false || msg.Contains("sequence_id") == false)
             {
-                Console.WriteLine("message missing 'right_text' OR 'session_id' OR 'sequence_id' .... ignored ....");
+                _logger.Error("message missing 'right_text' OR 'session_id' OR 'sequence_id' .... ignored ....");
                 return;
             }
 
             AnswerPlusSessionID aps = JsonConvert.DeserializeObject<AnswerPlusSessionID>(msg);
-            Console.WriteLine(aps.right_text);
-            Console.WriteLine(aps.session_id);
-            Console.WriteLine(aps.sequence_id);
+            _logger.Information(aps.right_text);
+            _logger.Information(aps.session_id);
+            _logger.Information(aps.sequence_id.ToString());
 
             if (m_sock2sessionID.ContainsKey(sock)==false)
             {
@@ -153,8 +155,8 @@ namespace BackendProxy2ASR
                 m_sock2sessionID[sock] = aps.session_id;
                 m_sessionID2sock[aps.session_id] = sock;
 
-                Console.WriteLine("map sock -> sessionID: " + aps.session_id);
-                Console.WriteLine("map sessionID " + aps.session_id + " -> sock");
+                _logger.Information("map sock -> sessionID: " + aps.session_id);
+                _logger.Information("map sessionID " + aps.session_id + " -> sock");
 
                 m_commASR.ConnectASR(aps.session_id);
             }
@@ -175,7 +177,7 @@ namespace BackendProxy2ASR
             // Insert recrod into database
             //----------------------------------------------------------------->
             bool connectionResult = databaseHelper.Open();
-            Console.WriteLine("Opening connection success? : " + connectionResult.ToString());
+            _logger.Information("Opening connection success? : " + connectionResult.ToString());
 
 
             // update asr_audio_stream_prediction

@@ -21,7 +21,7 @@
             {
                 "Name": "File",
                 "Args": {
-                    "path": "..logs/log.txt",
+                    "path": "../logs/log.txt",
                     "outputTemplate": "{Timestamp:dd-MM-yyyy HH:mm:ss} {SourceContext} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
                     "rollingInterval": "Day",
                     "rollOnFileSizeLimit": true,

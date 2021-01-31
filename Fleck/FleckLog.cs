@@ -1,4 +1,6 @@
 ﻿using System;
+using database_and_log;
+using Serilog;
 
 namespace Fleck
 {
@@ -13,11 +15,30 @@ namespace Fleck
     public class FleckLog
     {
         public static LogLevel Level = LogLevel.Info;
+        private static ILogger _logger = new LogHelper<FleckLog>("../config.json").Logger;
 
         public static Action<LogLevel, string, Exception> LogAction = (level, message, ex) =>
         {
-            if (level >= Level)
-                Console.WriteLine("{0} [{1}] {2} {3}", DateTime.Now, level, message, ex);
+            if (level >= Level) {
+                switch (level)
+                {
+                    case LogLevel.Warn:
+                        _logger.Warning(message, ex);
+                        break;
+
+                    case LogLevel.Error:
+                        _logger.Error(message, ex);
+                        break;
+
+                    case LogLevel.Debug:
+                        _logger.Debug(message, ex);
+                        break;
+
+                    case LogLevel.Info:
+                        _logger.Information(message, ex);
+                        break;
+                }
+            }
         };
 
         public static void Warn(string message, Exception ex = null)

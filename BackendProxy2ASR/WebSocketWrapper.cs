@@ -3,6 +3,8 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using database_and_log;
+using Serilog;
 
 
 namespace BackendProxy2ASR
@@ -20,6 +22,8 @@ namespace BackendProxy2ASR
         private Action<WebSocketWrapper> _onConnected;
         private Action<string, WebSocketWrapper> _onMessage;
         private Action<WebSocketWrapper> _onDisconnected;
+
+        private ILogger _logger = new LogHelper<WebSocketWrapper>("../config.json").Logger;
 
         protected WebSocketWrapper(string uri)
         {
@@ -218,7 +222,7 @@ namespace BackendProxy2ASR
             }
             catch (Exception e)
             {
-                Console.WriteLine("Error " + e);
+                _logger.Error(e, e.Message);
                 CallOnDisconnected();
             }
             finally
