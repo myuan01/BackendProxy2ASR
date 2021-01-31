@@ -1,5 +1,6 @@
 using Serilog;
 using System.IO;
+using System;
 using Microsoft.Extensions.Configuration;
 
 namespace database_and_log
@@ -8,16 +9,14 @@ namespace database_and_log
     {
         public static string outputTemplate = "{Timestamp:dd-MM-yyyy HH:mm:ss} [{SourceContext}:{Level:u3}] {Message:lj}{NewLine}{Exception}";
         private static readonly LogHelper instance = new LogHelper();
+        private static string _jsonConfigFilePath = "";
 
-        static LogHelper()
+        public static void InitLogHelper(string jsonConfigFilePath)
         {
-        }
-
-        private LogHelper()
-        {
+            jsonConfigFilePath = Path.GetFullPath(jsonConfigFilePath, Directory.GetCurrentDirectory());
+            _jsonConfigFilePath = jsonConfigFilePath;
             var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(path: "config.json", optional: false, reloadOnChange: true)
+                .AddJsonFile(path: jsonConfigFilePath, optional: false, reloadOnChange: true)
                 .Build();
 
             Log.Logger = new LoggerConfiguration()
@@ -25,16 +24,12 @@ namespace database_and_log
                 .CreateLogger();
         }
 
-        public static LogHelper Instance
+        public static ILogger GetLogger<T>()
         {
-            get
+            if (_jsonConfigFilePath == "")
             {
-                return instance;
+                throw new Exception("LogHelper not initialized. Please call the InitLogHelper method.");
             }
-        }
-
-        public ILogger GetLogger<T>()
-        {
             return Log.ForContext<T>();
         }
     }
