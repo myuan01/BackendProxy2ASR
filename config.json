@@ -21,11 +21,12 @@
             {
                 "Name": "File",
                 "Args": {
-                    "path": "../logs/log.txt",
+                    "path": "../logs/log_.txt",
                     "outputTemplate": "{Timestamp:dd-MM-yyyy HH:mm:ss} {SourceContext} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
                     "rollingInterval": "Day",
                     "rollOnFileSizeLimit": true,
                     "fileSizeLimitBytes": 50000000,
+                    "retainedFileCountLimit": 31,
                     "shared": true
                 }
             }

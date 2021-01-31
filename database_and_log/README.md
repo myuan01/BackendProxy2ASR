@@ -65,7 +65,6 @@ databaseHelper.Close();
 ## `LogHelper` API
 
 * Logging functionality implemented using [Serilog](https://github.com/serilog/serilog)
-* Log output template defined in [LogHelper](LogHelper.cs) class
 * Log config defined in a json file that is passed into the `LogHelper` constructor
 
 ```cs
