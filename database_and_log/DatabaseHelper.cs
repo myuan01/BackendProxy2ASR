@@ -24,7 +24,7 @@ namespace database_and_log
             _conn = new NpgsqlConnection(connectionString);
 
             // setup logger
-            _logger = LogHelper.GetLogger<DatabaseHelper>();
+            _logger = new LogHelper<DatabaseHelper>("../config.json").Logger;
         }
 
         private string LoadAndParseConfig(string jsonConfigFilePath)

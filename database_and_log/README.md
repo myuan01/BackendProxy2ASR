@@ -65,15 +65,14 @@ databaseHelper.Close();
 ## `LogHelper` API
 
 * Logging functionality implemented using [Serilog](https://github.com/serilog/serilog)
-* Log config and output template defined in [LogHelper](LogHelper.cs) class, which is implemented using a singleton design pattern
+* Log output template defined in [LogHelper](LogHelper.cs) class
+* Log config defined in a json file that is passed into the `LogHelper` constructor
 
 ```cs
 using Serilog;
 
-// init Logger. Just have to init Logger once
-LogHelper.InitLogHelper("../config.json");
 // pass in your class context so that it can be printed in the logs
-ILogger logger = LogHelper.GetLogger<DatabaseHelper>();
+ILogger logger = new LogHelper<DatabaseHelper>("../config.json").Logger;
 
 logger.Information(...);   // "... [DatabaseHelper:INF] ..."
 logger.Error(...);         // "... [DatabaseHelper:ERR] ..."
@@ -97,8 +96,7 @@ $ dotnet build
 using database_and_log;
 using Serilog;
 
-LogHelper.InitLogHelper("../config.json");
-ILogger logger = LogHelper.GetLogger<Program>();
+ILogger logger = new LogHelper<Program>("../config.json").Logger;
 logger.Information("Hello World!");
 
 DatabaseHelper database = new DatabaseHelper("../config.json");

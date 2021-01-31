@@ -5,16 +5,13 @@ using Microsoft.Extensions.Configuration;
 
 namespace database_and_log
 {
-    public class LogHelper
+    public class LogHelper<T>
     {
         public static string outputTemplate = "{Timestamp:dd-MM-yyyy HH:mm:ss} [{SourceContext}:{Level:u3}] {Message:lj}{NewLine}{Exception}";
-        private static readonly LogHelper instance = new LogHelper();
-        private static string _jsonConfigFilePath = "";
 
-        public static void InitLogHelper(string jsonConfigFilePath)
+        public LogHelper(string jsonConfigFilePath)
         {
             jsonConfigFilePath = Path.GetFullPath(jsonConfigFilePath, Directory.GetCurrentDirectory());
-            _jsonConfigFilePath = jsonConfigFilePath;
             var config = new ConfigurationBuilder()
                 .AddJsonFile(path: jsonConfigFilePath, optional: false, reloadOnChange: true)
                 .Build();
@@ -22,16 +19,12 @@ namespace database_and_log
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
                 .CreateLogger();
+
+            Logger = Log.ForContext<T>();
         }
 
-        public static ILogger GetLogger<T>()
-        {
-            if (_jsonConfigFilePath == "")
-            {
-                throw new Exception("LogHelper not initialized. Please call the InitLogHelper method.");
-            }
-            return Log.ForContext<T>();
-        }
+        public ILogger Logger { get; }
+
     }
 
 }

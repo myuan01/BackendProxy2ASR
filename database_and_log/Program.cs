@@ -26,8 +26,7 @@ namespace database_and_log
             string outputFilePath = args[1];
             byte[] audioFile = File.ReadAllBytes(inputFilePath);
 
-            LogHelper.InitLogHelper("../config.json");
-            ILogger log = LogHelper.GetLogger<Program>();
+            ILogger log = new LogHelper<Program>("../config.json").Logger;
 
             // Create dbhelper
             DatabaseHelper databaseHelper = new DatabaseHelper("../config.json");
