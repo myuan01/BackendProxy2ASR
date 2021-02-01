@@ -24,14 +24,14 @@ namespace database_and_log
             _conn = new NpgsqlConnection(connectionString);
 
             // setup logger
-            _logger = LogHelper.Instance.GetLogger<DatabaseHelper>();
+            _logger = new LogHelper<DatabaseHelper>("../config.json").Logger;
         }
 
         private string LoadAndParseConfig(string jsonConfigFilePath)
         {
+            jsonConfigFilePath = Path.GetFullPath(jsonConfigFilePath, Directory.GetCurrentDirectory());
             var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(path: "config.json", optional: false, reloadOnChange: true)
+                .AddJsonFile(path: jsonConfigFilePath, optional: false, reloadOnChange: true)
                 .Build();
 
             string host = config.GetSection("Database")["Host"];

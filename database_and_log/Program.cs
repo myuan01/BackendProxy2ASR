@@ -25,10 +25,10 @@ namespace database_and_log
             string inputFilePath = args[0];
             byte[] audioFile = File.ReadAllBytes(inputFilePath);
 
-            ILogger log = LogHelper.Instance.GetLogger<Program>();
+            ILogger log = new LogHelper<Program>("../config.json").Logger;
 
             // Create dbhelper
-            DatabaseHelper databaseHelper = new DatabaseHelper("./config.json");
+            DatabaseHelper databaseHelper = new DatabaseHelper("../config.json");
             bool connectionResult = databaseHelper.Open();
             log.Information($"Opening connection success? : {connectionResult}");
 

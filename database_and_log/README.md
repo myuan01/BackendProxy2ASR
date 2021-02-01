@@ -46,7 +46,7 @@ $ dotnet run ./sample_input.wav
 
 ```cs
 // Create dbhelper
-DatabaseHelper databaseHelper = new DatabaseHelper("./config.json");
+DatabaseHelper databaseHelper = new DatabaseHelper("../config.json");
 
 // open connection
 databaseHelper.Open();  
@@ -63,13 +63,13 @@ databaseHelper.Close();
 ## `LogHelper` API
 
 * Logging functionality implemented using [Serilog](https://github.com/serilog/serilog)
-* Log config and output template defined in [LogHelper](LogHelper.cs) class, which is implemented using a singleton design pattern
+* Log config defined in a json file that is passed into the `LogHelper` constructor
 
 ```cs
 using Serilog;
 
 // pass in your class context so that it can be printed in the logs
-ILogger logger = LogHelper.Instance.GetLogger<DatabaseHelper>();    
+ILogger logger = new LogHelper<DatabaseHelper>("../config.json").Logger;
 
 logger.Information(...);   // "... [DatabaseHelper:INF] ..."
 logger.Error(...);         // "... [DatabaseHelper:ERR] ..."
@@ -93,8 +93,8 @@ $ dotnet build
 using database_and_log;
 using Serilog;
 
-ILogger logger = LogHelper.Instance.GetLogger<Program>();
+ILogger logger = new LogHelper<Program>("../config.json").Logger;
 logger.Information("Hello World!");
 
-DatabaseHelper database = new DatabaseHelper("./config.json");
+DatabaseHelper database = new DatabaseHelper("../config.json");
 ```

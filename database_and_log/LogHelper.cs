@@ -1,42 +1,28 @@
 using Serilog;
 using System.IO;
+using System;
 using Microsoft.Extensions.Configuration;
 
 namespace database_and_log
 {
-    public class LogHelper
+    public class LogHelper<T>
     {
-        public static string outputTemplate = "{Timestamp:dd-MM-yyyy HH:mm:ss} [{SourceContext}:{Level:u3}] {Message:lj}{NewLine}{Exception}";
-        private static readonly LogHelper instance = new LogHelper();
-
-        static LogHelper()
+        public LogHelper(string jsonConfigFilePath)
         {
-        }
-
-        private LogHelper()
-        {
+            jsonConfigFilePath = Path.GetFullPath(jsonConfigFilePath, Directory.GetCurrentDirectory());
             var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile(path: "config.json", optional: false, reloadOnChange: true)
+                .AddJsonFile(path: jsonConfigFilePath, optional: false, reloadOnChange: true)
                 .Build();
 
             Log.Logger = new LoggerConfiguration()
                 .ReadFrom.Configuration(config)
                 .CreateLogger();
+
+            Logger = Log.ForContext<T>();
         }
 
-        public static LogHelper Instance
-        {
-            get
-            {
-                return instance;
-            }
-        }
+        public ILogger Logger { get; }
 
-        public ILogger GetLogger<T>()
-        {
-            return Log.ForContext<T>();
-        }
     }
 
 }

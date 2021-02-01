@@ -4,6 +4,7 @@ using System.Text;
 
 using Fleck;
 using database_and_log;
+using Serilog;
 using Newtonsoft.Json;
 
 
@@ -20,7 +21,9 @@ namespace BackendProxy2ASR
         private Dictionary<String, WebSocketWrapper> m_sessionID2wsWrap;
         private Dictionary<WebSocketWrapper, String> m_wsWrap2sessionID;
 
-        private DatabaseHelper databaseHelper = new DatabaseHelper("./config.json");
+        private DatabaseHelper databaseHelper = new DatabaseHelper("../config.json");
+
+        private ILogger _logger = new LogHelper<CommASR>("../config.json").Logger;
 
         protected CommASR(String asrIP, int asrPort, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, Dictionary<String, SessionHelper> sessionID2helper)
         {
@@ -57,13 +60,13 @@ namespace BackendProxy2ASR
         {
             var uri = "wss://" + m_asrIP + ":" + m_asrPort + "/ws/streamraw/" + m_sampleRate;
 
-            Console.WriteLine("entered CommASR::ConnectASR(" + sessionID + "): uri = " + uri);
+            _logger.Information("entered CommASR::ConnectASR(" + sessionID + "): uri = " + uri);
 
             var wsw = WebSocketWrapper.Create(uri);
 
             wsw.OnConnect((sock) =>
                 {
-                    Console.WriteLine("Connected to ASR Engine: sessionID = " + sessionID);
+                    _logger.Information("Connected to ASR Engine: sessionID = " + sessionID);
                     m_sessionID2wsWrap[sessionID] = sock;
                     m_wsWrap2sessionID[sock] = sessionID;
                     SendStartStream(sessionID);
@@ -72,7 +75,7 @@ namespace BackendProxy2ASR
 
             wsw.OnMessage((msg, sock) =>
                 {
-                    Console.WriteLine("EngineASR -> CommASR: " + msg + "  [sessionID = " + sessionID + ", sessionID = " + m_wsWrap2sessionID[sock] + "]");
+                    _logger.Information("EngineASR -> CommASR: " + msg + "  [sessionID = " + sessionID + ", sessionID = " + m_wsWrap2sessionID[sock] + "]");
                     var ProxySocket = m_sessionID2sock[sessionID];
                     ProxySocket.Send(msg);
                     InsertPredictionToDB(msg, sessionID);
@@ -84,7 +87,7 @@ namespace BackendProxy2ASR
                     SendEndStream(sessionID);
                     m_sessionID2wsWrap.Remove(sessionID);
                     m_wsWrap2sessionID.Remove(sock);
-                    Console.WriteLine("Disconnected from ASR Engine: sessionID = " + sessionID);
+                    _logger.Information("Disconnected from ASR Engine: sessionID = " + sessionID);
                 }
             );
 
@@ -100,11 +103,11 @@ namespace BackendProxy2ASR
             {
                 var wsw = m_sessionID2wsWrap[sessionID];
                 wsw.Disconnect();
-                Console.WriteLine("DisconnectASR: sessionID = " + sessionID);
+                _logger.Information("DisconnectASR: sessionID = " + sessionID);
             }
             else
             {
-                Console.WriteLine("Wrong sessioID when disconnecting from ASR: sessionID = " + sessionID);
+                _logger.Error("Wrong sessioID when disconnecting from ASR: sessionID = " + sessionID);
             }
         }
 
@@ -122,11 +125,11 @@ namespace BackendProxy2ASR
                 start[0] = 0;
                 m_sessionID2wsWrap[sessionID].SendBytes(start);
 
-                Console.WriteLine("start pkt sent to start stream: sessionID = " + sessionID);
+                _logger.Information("start pkt sent to start stream: sessionID = " + sessionID);
             }
             else
             {
-                Console.WriteLine("wrong sessioID in SendStartStream: sessionID = " + sessionID);
+                _logger.Error("wrong sessioID in SendStartStream: sessionID = " + sessionID);
             }
         }
 
@@ -144,11 +147,11 @@ namespace BackendProxy2ASR
                 end[0] = 1;
                 m_sessionID2wsWrap[sessionID].SendBytes(end);
 
-                Console.WriteLine("end pkt sent to end stream: sessionID = " + sessionID);
+                _logger.Information("end pkt sent to end stream: sessionID = " + sessionID);
             }
             else
             {
-                Console.WriteLine("wrong sessioID in SendEndStream: sessionID = " + sessionID);
+                _logger.Error("wrong sessioID in SendEndStream: sessionID = " + sessionID);
             }
         }
 
@@ -166,7 +169,7 @@ namespace BackendProxy2ASR
             }
             else
             {
-                Console.WriteLine("wrong sessioID in SendBinaryData: sessionID = " + sessionID);
+                _logger.Error("wrong sessioID in SendBinaryData: sessionID = " + sessionID);
             }
         }
 
@@ -195,9 +198,9 @@ namespace BackendProxy2ASR
 
                 if (ASRResult.result != "" && ASRResult.cmd == "asrfull")
                 {
- 
+
                     bool connectionResult = databaseHelper.Open();
-                    Console.WriteLine("Opening connection success? : " + connectionResult.ToString());
+                    _logger.Information("Opening connection success? : " + connectionResult.ToString());
                     if (connectionResult)
                     {
                         DateTime startTime = session.m_sequenceStartTime[sequenceID];
@@ -221,15 +224,13 @@ namespace BackendProxy2ASR
                     }
 
                     connectionResult = databaseHelper.Close();
-                    Console.WriteLine("Closing connection success? : " + connectionResult.ToString());
-
+                    _logger.Information("Closing connection success? : " + connectionResult.ToString());
                 }
             }
             catch (Exception e)
             {
-                Console.WriteLine("Update Database Error: " + e.ToString());
+                _logger.Error(e, e.Message);
             }
         }
     }
-
 }
