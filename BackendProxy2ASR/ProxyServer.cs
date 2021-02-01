@@ -72,17 +72,8 @@ namespace BackendProxy2ASR
         {
             FleckLog.Level = LogLevel.Error;
             var server = new WebSocketServer("ws://0.0.0.0:" + m_proxyPort);
-
-<<<<<<< HEAD
-            // connect to database
-            //bool connectionResult = dbhelper.Open();
-            //Console.WriteLine("Opening connection success? : " + connectionResult.ToString());
-
             _logger.Information("Starting Fleck WebSocket Server...");
             _logger.Information("port: " + m_proxyPort + "  samplerate: " + m_sampleRate);
-=======
-            Console.WriteLine("port: " + m_proxyPort + "  samplerate: " + m_sampleRate);
->>>>>>> main
 
             server.Start(socket =>
                 {
