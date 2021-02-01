@@ -198,6 +198,7 @@ namespace BackendProxy2ASR
             //----------------------------------------------------------------->
             // Initialize recrod into database
             //----------------------------------------------------------------->
+            /**
             bool connectionResult = databaseHelper.Open();
             _logger.Information("Opening connection success? : " + connectionResult.ToString());
 
@@ -221,6 +222,7 @@ namespace BackendProxy2ASR
                 proc_start_time: DateTime.UtcNow,
                 proc_end_time: DateTime.UtcNow,
                 stream_duration: 0);
+            **/
         }
 
         //--------------------------------------------------------------------->

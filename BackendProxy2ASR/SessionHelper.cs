@@ -15,6 +15,7 @@ namespace BackendProxy2ASR
         public Dictionary<int, string> m_sequence2inputword { get; set; }
         public Dictionary<int, DateTime> m_sequenceStartTime { get; set; }
         public Dictionary<int, List<byte>> m_sequenceBytes { get; set; }
+        public Dictionary<int, List<string>> m_sequencePredictionResult { get; set; }
         public Queue<int> m_sequenceQueue { get; set; }
 
         private int CurrentSequenceID;
@@ -35,6 +36,7 @@ namespace BackendProxy2ASR
             m_sequence2inputword = new Dictionary<int, string>();
             m_sequenceStartTime = new Dictionary<int, DateTime>();
             m_sequenceBytes = new Dictionary<int, List<byte>>();
+            m_sequencePredictionResult = new Dictionary<int, List<string>>();
             m_sequenceQueue = new Queue<int>();
         }
 

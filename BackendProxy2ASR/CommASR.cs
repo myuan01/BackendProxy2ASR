@@ -78,7 +78,7 @@ namespace BackendProxy2ASR
                     _logger.Information("EngineASR -> CommASR: " + msg + "  [sessionID = " + sessionID + ", sessionID = " + m_wsWrap2sessionID[sock] + "]");
                     var ProxySocket = m_sessionID2sock[sessionID];
                     ProxySocket.Send(msg);
-                    InsertPredictionToDB(msg, sessionID);
+                    //InsertPredictionToDB(msg, sessionID);
                 }
             );
 
@@ -194,6 +194,7 @@ namespace BackendProxy2ASR
                 {
                     sequenceID = session.GetCurrentSequenceID();
                     session.m_uttID2sequence[uttid] = sequenceID;
+                    session.m_sequencePredictionResult[sequenceID] = new List<string>();
                 }
 
                 if (ASRResult.result != "" && ASRResult.cmd == "asrfull")
@@ -207,12 +208,17 @@ namespace BackendProxy2ASR
                         DateTime endTime = DateTime.UtcNow;
                         byte[] input_audio = session.RetrieveSequenceBytes(sequenceID);
 
+                        //Add preduction result
+                        session.m_sequencePredictionResult[sequenceID].Add(ASRResult.result);
+                        var currentResult = String.Join(", ", session.m_sequencePredictionResult[sequenceID].ToArray());
+
                         // update audio prediction result
                         databaseHelper.UpdateAudioStreamPrediction(
                             session_id: sessionID,
                             seq_id: sequenceID,
                             pred_timestamp: endTime,
-                            return_text: ASRResult.result
+                            return_text: currentResult
+                            //return_text: ASRResult.result
                             );
                         // ipdate audio stream info
                         databaseHelper.UpdateAudioStreamInfo(
