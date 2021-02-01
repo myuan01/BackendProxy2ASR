@@ -40,25 +40,31 @@ namespace BackendProxy2ASR
         //private DatabaseHelper dbhelper = null;
         private Dictionary<String, SessionHelper> m_sessionID2Helper;
 
-        private DatabaseHelper databaseHelper = new DatabaseHelper("../config.json");
-        private ILogger _logger = new LogHelper<ProxyASR>("../config.json").Logger;
+        private DatabaseHelper databaseHelper;
+        private ILogger _logger;
         private UserCredential savedUserCrednetial = new UserCredential();
+
+        private IConfiguration _config;
 
         //--------------------------------------------------------------------->
         // C'TOR: initialize member variables
         //--------------------------------------------------------------------->
-        public ProxyASR(int proxyPort, String asrIP, int asrPort, int sampleRate)
+        public ProxyASR(IConfiguration config)
         {
-            m_proxyPort = proxyPort;
-            m_asrIP = asrIP;
-            m_asrPort = asrPort;
-            m_sampleRate = sampleRate;
+            _config = config;
+            databaseHelper = new DatabaseHelper(config);
+            _logger = LogHelper.GetLogger<ProxyASR>();
+
+            m_proxyPort = Int32.Parse(config.GetSection("Proxy")["proxyPort"]);
+            m_asrIP = config.GetSection("Proxy")["asrIP"];
+            m_asrPort = Int32.Parse(config.GetSection("Proxy")["asrPort"]);
+            m_sampleRate = Int32.Parse(config.GetSection("Proxy")["samplerate"]);
             m_allSockets = new List<IWebSocketConnection>();
             m_sessionID2sock = new Dictionary<String, IWebSocketConnection>();
             m_sock2sessionID = new Dictionary<IWebSocketConnection, String>();
             m_sessionID2Helper = new Dictionary<String, SessionHelper>();
 
-            m_commASR = CommASR.Create(asrIP, asrPort, sampleRate, m_sessionID2sock, m_sessionID2Helper);
+            m_commASR = CommASR.Create(m_asrIP, m_asrPort, m_sampleRate, m_sessionID2sock, m_sessionID2Helper, config);
         }
 
 
@@ -71,6 +77,7 @@ namespace BackendProxy2ASR
         public void Start()
         {
             FleckLog.Level = LogLevel.Error;
+
             var server = new WebSocketServer("ws://0.0.0.0:" + m_proxyPort);
             _logger.Information("Starting Fleck WebSocket Server...");
             _logger.Information("port: " + m_proxyPort + "  samplerate: " + m_sampleRate);

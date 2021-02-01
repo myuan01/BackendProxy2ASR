@@ -15,7 +15,7 @@ namespace Fleck
     public class FleckLog
     {
         public static LogLevel Level = LogLevel.Info;
-        private static ILogger _logger = new LogHelper<FleckLog>("../config.json").Logger;
+        private static ILogger _logger = LogHelper.GetLogger<FleckLog>();
 
         public static Action<LogLevel, string, Exception> LogAction = (level, message, ex) =>
         {

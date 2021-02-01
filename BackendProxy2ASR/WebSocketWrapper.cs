@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using database_and_log;
 using Serilog;
+using Microsoft.Extensions.Configuration;
 
 
 namespace BackendProxy2ASR
@@ -23,7 +24,7 @@ namespace BackendProxy2ASR
         private Action<string, WebSocketWrapper> _onMessage;
         private Action<WebSocketWrapper> _onDisconnected;
 
-        private ILogger _logger = new LogHelper<WebSocketWrapper>("../config.json").Logger;
+        private ILogger _logger = LogHelper.GetLogger<WebSocketWrapper>();
 
         protected WebSocketWrapper(string uri)
         {

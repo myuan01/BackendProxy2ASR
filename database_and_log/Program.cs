@@ -1,12 +1,13 @@
 ﻿using System;
 using System.IO;
 using Serilog;
+using Microsoft.Extensions.Configuration;
 
 namespace database_and_log
 {
     class Program
     {
-        private const string usageText = "Usage: demo inputPath";
+        private const string usageText = "Usage: demo configPath";
         private const int test_user_id = 1;
         private const string test_device_id = "device_id_1";
 
@@ -22,13 +23,24 @@ namespace database_and_log
                 return;
             }
 
-            string inputFilePath = args[0];
-            byte[] audioFile = File.ReadAllBytes(inputFilePath);
+            string configPath = args[0];
+            configPath = Path.GetFullPath(configPath, Directory.GetCurrentDirectory());
+            if (!File.Exists(configPath))
+            {
+                Console.WriteLine($"Config file at {configPath} does not exists. Please pass in a valid path.");
+                return;
+            }
 
-            ILogger log = new LogHelper<Program>("../config.json").Logger;
+            IConfiguration config = new ConfigurationBuilder()
+                .AddJsonFile(path: configPath, optional: false, reloadOnChange: true)
+                .Build();
+
+            // Init LogHelper
+            LogHelper.Initialize(config);
+            ILogger log = LogHelper.GetLogger<Program>();
 
             // Create dbhelper
-            DatabaseHelper databaseHelper = new DatabaseHelper("../config.json");
+            DatabaseHelper databaseHelper = new DatabaseHelper(config);
             bool connectionResult = databaseHelper.Open();
             log.Information($"Opening connection success? : {connectionResult}");
 

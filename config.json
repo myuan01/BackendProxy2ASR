@@ -1,4 +1,10 @@
 {
+    "Proxy": {
+        "proxyPort": 8008,
+        "asrIP": "127.0.0.1",
+        "asrPort": 7000,
+        "samplerate": 16000
+    },
     "Database": {
         "Host": "localhost",
         "Username": "postgres",
