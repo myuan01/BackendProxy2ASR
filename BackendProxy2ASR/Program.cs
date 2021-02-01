@@ -1,9 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
 using Serilog;
 using database_and_log;
+using Microsoft.Extensions.Configuration;
 
 
 namespace BackendProxy2ASR
@@ -12,22 +12,29 @@ namespace BackendProxy2ASR
     {
         static void Main(string[] args)
         {
-            ILogger logger = new LogHelper<Program>("../config.json").Logger;
-
-            //args = { "8008", "127.0.0.1", "7000", "16000"};
-            if (args.Length != 4)
+            if (args.Length != 1)
             {
-                logger.Error("Invalid arguments");
-                logger.Information("Usage: BackendProxy2ASR.exe <proxyPort> <asrIP> <asrPort> <samplerate>");
+                Console.WriteLine("Invalid arguments. Please pass in path to config.json file.");
                 return;
             }
 
-            int proxyPort = Int32.Parse(args[0]);
-            String asrIP = args[1];
-            int asrPort = Int32.Parse(args[2]);
-            int sampleRate = Int32.Parse(args[3]);
+            string configPath = args[0];
+            configPath = Path.GetFullPath(configPath, Directory.GetCurrentDirectory());
+            if (!File.Exists(configPath))
+            {
+                Console.WriteLine($"Config file at {configPath} does not exists. Please pass in a valid path.");
+                return;
+            }
 
-            ProxyASR proxy = new ProxyASR(proxyPort, asrIP, asrPort, sampleRate);
+            IConfiguration config = new ConfigurationBuilder()
+                .AddJsonFile(path: configPath, optional: false, reloadOnChange: true)
+                .Build();
+
+            // Init LogHelper
+            LogHelper.Initialize(config);
+            ILogger logger = LogHelper.GetLogger<Program>();
+
+            ProxyASR proxy = new ProxyASR(config);
             proxy.Start();
 
             var input = Console.ReadLine();

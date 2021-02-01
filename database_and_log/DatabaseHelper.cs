@@ -12,28 +12,20 @@ namespace database_and_log
     public class DatabaseHelper
     {
         private NpgsqlConnection _conn;
-        private ILogger _logger;
+        private ILogger _logger = LogHelper.GetLogger<DatabaseHelper>();
 
-        public DatabaseHelper(string jsonConfigFilePath)
+        public DatabaseHelper(IConfiguration config)
         {
             // read config from configFilePath and parse into connection string
             // connectionString = "Host=localhost;Username=postgres;Password=password;Database=ai_3_staging";
-            string connectionString = LoadAndParseConfig(jsonConfigFilePath: jsonConfigFilePath);
+            string connectionString = LoadAndParseConfig(config);
 
             // Connect to db
             _conn = new NpgsqlConnection(connectionString);
-
-            // setup logger
-            _logger = new LogHelper<DatabaseHelper>("../config.json").Logger;
         }
 
-        private string LoadAndParseConfig(string jsonConfigFilePath)
+        private string LoadAndParseConfig(IConfiguration config)
         {
-            jsonConfigFilePath = Path.GetFullPath(jsonConfigFilePath, Directory.GetCurrentDirectory());
-            var config = new ConfigurationBuilder()
-                .AddJsonFile(path: jsonConfigFilePath, optional: false, reloadOnChange: true)
-                .Build();
-
             string host = config.GetSection("Database")["Host"];
             string username = config.GetSection("Database")["Username"];
             string password = config.GetSection("Database")["Password"];

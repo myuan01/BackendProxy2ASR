@@ -25,17 +25,17 @@ $ dotnet build
 
 ```bash
 $ dotnet run
-Usage: demo inputPath
+Usage: demo configPath
 
-$ dotnet run ./sample_input.wav
-21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Opening database connection...
-21-01-2021 16:50:23 database_and_log.Program [INF] Opening connection success? : True
-21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Storing prediction for session session_id_3, seq 10.
-21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Database insertion complete.
-21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Storing stream info for session session_id_3, seq 10.
-21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Database insertion complete.
-21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Closing database connection...
-21-01-2021 16:50:23 database_and_log.Program [INF] Closing connection success? : True
+$ dotnet run ../config.json
+01-02-2021 17:56:29 database_and_log.DatabaseHelper [INF] Opening database connection...
+01-02-2021 17:56:29 database_and_log.Program [INF] Opening connection success? : True
+01-02-2021 17:56:29 database_and_log.DatabaseHelper [INF] Storing prediction for session session_id_3, seq 10.
+01-02-2021 17:56:29 database_and_log.DatabaseHelper [INF] Database insertion complete.
+01-02-2021 17:56:29 database_and_log.DatabaseHelper [INF] Storing stream info for session session_id_3, seq 10.
+01-02-2021 17:56:29 database_and_log.DatabaseHelper [INF] Database insertion complete.
+01-02-2021 17:56:29 database_and_log.DatabaseHelper [INF] Closing database connection...
+01-02-2021 17:56:29 database_and_log.Program [INF] Closing connection success? : True
 
 ```
 
@@ -45,8 +45,12 @@ $ dotnet run ./sample_input.wav
 * For an example on how `DatabaseHelper` can be used, look at [Program.cs](Program.cs)
 
 ```cs
+IConfiguration config = new ConfigurationBuilder()
+    .AddJsonFile(path: configPath, optional: false, reloadOnChange: true)
+    .Build();
+
 // Create dbhelper
-DatabaseHelper databaseHelper = new DatabaseHelper("../config.json");
+DatabaseHelper databaseHelper = new DatabaseHelper(config);
 
 // open connection
 databaseHelper.Open();  
@@ -63,13 +67,20 @@ databaseHelper.Close();
 ## `LogHelper` API
 
 * Logging functionality implemented using [Serilog](https://github.com/serilog/serilog)
-* Log config defined in a json file that is passed into the `LogHelper` constructor
+* Log config defined in a json file that is passed into `LogHelper.Initialize`
+* Call `LogHelper.Initialize` first to initialize the LogHelper class
+* Init `LogHelper` as soon as possible (when program starts) so that other classes can get use `LogHelper.GetLogger`
 
 ```cs
 using Serilog;
 
-// pass in your class context so that it can be printed in the logs
-ILogger logger = new LogHelper<DatabaseHelper>("../config.json").Logger;
+IConfiguration config = new ConfigurationBuilder()
+    .AddJsonFile(path: configPath, optional: false, reloadOnChange: true)
+    .Build();
+
+// Init LogHelper
+LogHelper.Initialize(config);
+ILogger logger = LogHelper.GetLogger<Program>();
 
 logger.Information(...);   // "... [DatabaseHelper:INF] ..."
 logger.Error(...);         // "... [DatabaseHelper:ERR] ..."
@@ -86,15 +97,19 @@ $ dotnet add reference ../database_and_log/database_and_log.csproj
 $ dotnet build
 ```
 
-* add a copy of [config.json](config.json) to your project directory with the relevant credentials
 * import `database_and_log` namespace and use `DatabaseHelper` and `LogHelper`
 
 ```cs
 using database_and_log;
 using Serilog;
 
-ILogger logger = new LogHelper<Program>("../config.json").Logger;
+IConfiguration config = new ConfigurationBuilder()
+    .AddJsonFile(path: configPath, optional: false, reloadOnChange: true)
+    .Build();
+
+LogHelper.Initialize(config);
+ILogger logger = LogHelper.GetLogger<Program>();
 logger.Information("Hello World!");
 
-DatabaseHelper database = new DatabaseHelper("../config.json");
+DatabaseHelper database = new DatabaseHelper(config);
 ```

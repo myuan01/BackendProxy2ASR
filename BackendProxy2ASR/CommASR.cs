@@ -6,6 +6,7 @@ using Fleck;
 using database_and_log;
 using Serilog;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 
 namespace BackendProxy2ASR
@@ -21,11 +22,11 @@ namespace BackendProxy2ASR
         private Dictionary<String, WebSocketWrapper> m_sessionID2wsWrap;
         private Dictionary<WebSocketWrapper, String> m_wsWrap2sessionID;
 
-        private DatabaseHelper databaseHelper = new DatabaseHelper("../config.json");
+        private DatabaseHelper databaseHelper;
 
-        private ILogger _logger = new LogHelper<CommASR>("../config.json").Logger;
+        private ILogger _logger = LogHelper.GetLogger<CommASR>();
 
-        protected CommASR(String asrIP, int asrPort, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, Dictionary<String, SessionHelper> sessionID2helper)
+        protected CommASR(String asrIP, int asrPort, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, Dictionary<String, SessionHelper> sessionID2helper, IConfiguration config)
         {
             m_asrIP = asrIP;
             m_asrPort = asrPort;
@@ -36,6 +37,7 @@ namespace BackendProxy2ASR
             m_sessionID2wsWrap = new Dictionary<String, WebSocketWrapper>();
             m_wsWrap2sessionID = new Dictionary<WebSocketWrapper, String>();
 
+            databaseHelper = new DatabaseHelper(config);
         }
 
         //----------------------------------------------------------------------------------------->
@@ -51,9 +53,9 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         // Creates a new instance
         //----------------------------------------------------------------------------------------->
-        public static CommASR Create(String ip, int port, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, Dictionary<String, SessionHelper> sessionID2helper)
+        public static CommASR Create(String ip, int port, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, Dictionary<String, SessionHelper> sessionID2helper, IConfiguration config)
         {
-            return new CommASR(ip, port, sampleRate, sessionID2sock, sessionID2helper);
+            return new CommASR(ip, port, sampleRate, sessionID2sock, sessionID2helper, config);
         }
 
         public void ConnectASR(String sessionID)

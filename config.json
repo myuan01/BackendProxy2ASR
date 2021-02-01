@@ -1,4 +1,10 @@
 {
+    "Proxy": {
+        "proxyPort": 8008,
+        "asrIP": "127.0.0.1",
+        "asrPort": 7000,
+        "samplerate": 16000
+    },
     "Database": {
         "Host": "localhost",
         "Username": "postgres",
@@ -21,7 +27,7 @@
             {
                 "Name": "File",
                 "Args": {
-                    "path": "../logs/log_.txt",
+                    "path": "./logs/log_.txt",
                     "outputTemplate": "{Timestamp:dd-MM-yyyy HH:mm:ss} {SourceContext} [{Level:u3}] {Message:lj}{NewLine}{Exception}",
                     "rollingInterval": "Day",
                     "rollOnFileSizeLimit": true,
