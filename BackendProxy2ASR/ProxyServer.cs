@@ -44,14 +44,11 @@ namespace BackendProxy2ASR
         private ILogger _logger;
         private UserCredential savedUserCrednetial = new UserCredential();
 
-        private IConfiguration _config;
-
         //--------------------------------------------------------------------->
         // C'TOR: initialize member variables
         //--------------------------------------------------------------------->
         public ProxyASR(IConfiguration config)
         {
-            _config = config;
             databaseHelper = new DatabaseHelper(config);
             _logger = LogHelper.GetLogger<ProxyASR>();
 
