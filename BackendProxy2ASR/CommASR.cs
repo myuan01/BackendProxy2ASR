@@ -208,7 +208,6 @@ namespace BackendProxy2ASR
                         databaseHelper.UpdateAudioStreamPrediction(
                             session_id: sessionID,
                             seq_id: sequenceID,
-                            input_audio: input_audio,
                             pred_timestamp: endTime,
                             return_text: ASRResult.result
                             );

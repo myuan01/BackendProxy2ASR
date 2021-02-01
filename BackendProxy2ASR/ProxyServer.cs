@@ -207,7 +207,6 @@ namespace BackendProxy2ASR
                 app_id: 1,
                 session_id: aps.session_id,
                 seq_id: aps.sequence_id,
-                input_audio: Encoding.ASCII.GetBytes("new sequence start"),
                 pred_timestamp: DateTime.UtcNow,
                 input_word: aps.right_text,
                 return_text: "");

@@ -25,17 +25,15 @@ $ dotnet build
 
 ```bash
 $ dotnet run
-Usage: demo inputPath outputPat
+Usage: demo inputPath
 
-$ dotnet run ./sample_input.wav ./output.wav
+$ dotnet run ./sample_input.wav
 21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Opening database connection...
 21-01-2021 16:50:23 database_and_log.Program [INF] Opening connection success? : True
 21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Storing prediction for session session_id_3, seq 10.
 21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Database insertion complete.
 21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Storing stream info for session session_id_3, seq 10.
 21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Database insertion complete.
-21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Reading audio info for session session_id_3, seq 10.
-21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Writing audio file to ./output.wav
 21-01-2021 16:50:23 database_and_log.DatabaseHelper [INF] Closing database connection...
 21-01-2021 16:50:23 database_and_log.Program [INF] Closing connection success? : True
 
