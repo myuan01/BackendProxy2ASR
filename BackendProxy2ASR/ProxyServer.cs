@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using Fleck;
 using Newtonsoft.Json;
+using Microsoft.Extensions.Configuration;
 
 using Serilog;
 using database_and_log;
@@ -16,6 +17,12 @@ namespace BackendProxy2ASR
         public string right_text { get; set; }
         public string session_id { get; set; }
         public int sequence_id { get; set; }
+    }
+
+    class UserInfo
+    {
+        public string username { get; set; }
+        public string password { get; set; }
     }
 
     class ProxyASR
@@ -35,6 +42,7 @@ namespace BackendProxy2ASR
 
         private DatabaseHelper databaseHelper = new DatabaseHelper("../config.json");
         private ILogger _logger = new LogHelper<ProxyASR>("../config.json").Logger;
+        private UserCredential savedUserCrednetial = new UserCredential();
 
         //--------------------------------------------------------------------->
         // C'TOR: initialize member variables
@@ -51,10 +59,6 @@ namespace BackendProxy2ASR
             m_sessionID2Helper = new Dictionary<String, SessionHelper>();
 
             m_commASR = CommASR.Create(asrIP, asrPort, sampleRate, m_sessionID2sock, m_sessionID2Helper);
-
-            //dbhelper = new DatabaseHelper("./config.json");
-            
-
         }
 
 
@@ -69,12 +73,16 @@ namespace BackendProxy2ASR
             FleckLog.Level = LogLevel.Error;
             var server = new WebSocketServer("ws://0.0.0.0:" + m_proxyPort);
 
+<<<<<<< HEAD
             // connect to database
             //bool connectionResult = dbhelper.Open();
             //Console.WriteLine("Opening connection success? : " + connectionResult.ToString());
 
             _logger.Information("Starting Fleck WebSocket Server...");
             _logger.Information("port: " + m_proxyPort + "  samplerate: " + m_sampleRate);
+=======
+            Console.WriteLine("port: " + m_proxyPort + "  samplerate: " + m_sampleRate);
+>>>>>>> main
 
             server.Start(socket =>
                 {
@@ -121,7 +129,11 @@ namespace BackendProxy2ASR
             _logger.Information("WS Disconnect...");
             // Disconnect from ASR engine
             var session_id = m_sock2sessionID[sock];
-            m_commASR.DisconnectASR(session_id);
+            if (String.IsNullOrEmpty(session_id) == false)
+            {
+                m_commASR.DisconnectASR(session_id);
+            }
+            
             m_allSockets.Remove(sock);
         }
 
@@ -134,6 +146,18 @@ namespace BackendProxy2ASR
             _logger.Information(msg);
 
             sock.Send("Echo: " + msg);
+
+            if (msg.Contains("username") == true || msg.Contains("password") == true)
+            {
+                Console.WriteLine("Receive user information...");
+                UserInfo user = JsonConvert.DeserializeObject<UserInfo>(msg);
+                if (CheckUserCredential(user.username, user.password) == false)
+                {
+                    sock.OnClose();
+                    //return;
+                }
+                return;
+            }
 
             if (msg.Contains("right_text")==false || msg.Contains("session_id")==false || msg.Contains("sequence_id") == false)
             {
@@ -164,21 +188,27 @@ namespace BackendProxy2ASR
             //----------------------------------------------------------------->
             // Store session and sequence information
             //----------------------------------------------------------------->
-
-            var session = m_sessionID2Helper[aps.session_id];
-            if(session.m_sequence2inputword.ContainsKey(aps.sequence_id) == false)
+            try
             {
-                session.m_sequence2inputword[aps.sequence_id] = aps.right_text;
-                session.m_sequenceQueue.Enqueue(aps.sequence_id);
-                session.m_sequenceStartTime[aps.sequence_id] = DateTime.UtcNow;
+                var session = m_sessionID2Helper[aps.session_id];
+                if (session.m_sequence2inputword.ContainsKey(aps.sequence_id) == false)
+                {
+                    session.m_sequence2inputword[aps.sequence_id] = aps.right_text;
+                    session.m_sequenceQueue.Enqueue(aps.sequence_id);
+                    session.m_sequenceStartTime[aps.sequence_id] = DateTime.UtcNow;
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine("Retrieve Session informatino error: " + e.ToString());
+            }
+            
 
             //----------------------------------------------------------------->
-            // Insert recrod into database
+            // Initialize recrod into database
             //----------------------------------------------------------------->
             bool connectionResult = databaseHelper.Open();
             _logger.Information("Opening connection success? : " + connectionResult.ToString());
-
 
             // update asr_audio_stream_prediction
             databaseHelper.InsertAudioStreamPrediction(
@@ -201,10 +231,6 @@ namespace BackendProxy2ASR
                 proc_start_time: DateTime.UtcNow,
                 proc_end_time: DateTime.UtcNow,
                 stream_duration: 0);
-
-                // Read from db
-                //databaseHelper.ReadAudioStream(test_session_id, test_seq_id, outputFilePath);
-
         }
 
         //--------------------------------------------------------------------->
@@ -212,13 +238,30 @@ namespace BackendProxy2ASR
         //--------------------------------------------------------------------->
         private void OnBinaryData(IWebSocketConnection sock, byte[] data)
         {
-            //Console.WriteLine("OnBinaryData: " + data.Length + " bytes");
             var sessionID = m_sock2sessionID[sock];
             m_commASR.SendBinaryData(sessionID, data);
 
             var session = m_sessionID2Helper[sessionID];
             var sequenceID = session.GetCurrentSequenceID();
             session.StoreIncommingBytes(sequenceID, data);
+        }
+
+        //--------------------------------------------------------------------->
+        // Check user credential
+        //--------------------------------------------------------------------->
+        private bool CheckUserCredential (string username, string password)
+        {
+            var savedCredential = savedUserCrednetial.Credential;
+            if (savedCredential.ContainsKey(username) == false)
+            {
+                Console.WriteLine("Invalid username. Disconnect...");
+                return false;
+            } else if (savedCredential[username] != password)
+            {
+                Console.WriteLine("Incorrect password for " + username+ ". Disconnect...");
+                return false;
+            }
+            return true;
         }
     }
 

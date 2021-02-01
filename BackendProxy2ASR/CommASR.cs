@@ -166,9 +166,6 @@ namespace BackendProxy2ASR
                 //send actual voice stream
                 //----------------------------------------------->
                 m_sessionID2wsWrap[sessionID].SendBytes(data);
-
-                //Console.WriteLine("audio stream pkt sent: sessionID = " + sessionID);
-
             }
             else
             {
@@ -177,30 +174,31 @@ namespace BackendProxy2ASR
         }
 
         //----------------------------------------------------------------------------------------->
-        // insert prediction to database
+        // Update prediction and information to database
         //----------------------------------------------------------------------------------------->
         public void InsertPredictionToDB(string msg, string sessionID)
         {
             PredictionResult ASRResult = JsonConvert.DeserializeObject<PredictionResult>(msg);
-            var session = m_sessionID2helper[sessionID];
-            var uttid = ASRResult.uttID;
-            int sequenceID;
 
-            if (session.m_uttID2sequence.ContainsKey(uttid) == true)
+            try
             {
-                sequenceID = session.m_uttID2sequence[uttid];
-            }
-            else
-            {
-                sequenceID = session.GetCurrentSequenceID();
-                session.m_uttID2sequence[uttid] = sequenceID;
-            }
+                var session = m_sessionID2helper[sessionID];
+                var uttid = ASRResult.uttID;
+                int sequenceID;
 
-
-            if (ASRResult.result != "" && ASRResult.cmd == "asrfull")
-            {
-                try
+                if (session.m_uttID2sequence.ContainsKey(uttid) == true)
                 {
+                    sequenceID = session.m_uttID2sequence[uttid];
+                }
+                else
+                {
+                    sequenceID = session.GetCurrentSequenceID();
+                    session.m_uttID2sequence[uttid] = sequenceID;
+                }
+
+                if (ASRResult.result != "" && ASRResult.cmd == "asrfull")
+                {
+
                     bool connectionResult = databaseHelper.Open();
                     _logger.Information("Opening connection success? : " + connectionResult.ToString());
                     if (connectionResult)
@@ -209,7 +207,7 @@ namespace BackendProxy2ASR
                         DateTime endTime = DateTime.UtcNow;
                         byte[] input_audio = session.RetrieveSequenceBytes(sequenceID);
 
-                        // update asr_audio_stream_prediction
+                        // update audio prediction result
                         databaseHelper.UpdateAudioStreamPrediction(
                             session_id: sessionID,
                             seq_id: sequenceID,
@@ -217,7 +215,7 @@ namespace BackendProxy2ASR
                             pred_timestamp: endTime,
                             return_text: ASRResult.result
                             );
-
+                        // ipdate audio stream info
                         databaseHelper.UpdateAudioStreamInfo(
                             session_id: sessionID,
                             seq_id: sequenceID,
@@ -229,14 +227,11 @@ namespace BackendProxy2ASR
                     connectionResult = databaseHelper.Close();
                     _logger.Information("Closing connection success? : " + connectionResult.ToString());
                 }
-                catch (Exception e)
-                {
-                    _logger.Error(e, e.Message);
-                }
             }
-
-
+            catch (Exception e)
+            {
+                _logger.Error(e, e.Message);
+            }
         }
     }
-
 }
