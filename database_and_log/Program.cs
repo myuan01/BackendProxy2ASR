@@ -6,7 +6,7 @@ namespace database_and_log
 {
     class Program
     {
-        private const string usageText = "Usage: demo inputPath outputPath";
+        private const string usageText = "Usage: demo inputPath";
         private const int test_user_id = 1;
         private const string test_device_id = "device_id_1";
 
@@ -16,14 +16,13 @@ namespace database_and_log
 
         static void Main(string[] args)
         {
-            if (args.Length < 2)
+            if (args.Length < 1)
             {
                 Console.WriteLine(usageText);
                 return;
             }
 
             string inputFilePath = args[0];
-            string outputFilePath = args[1];
             byte[] audioFile = File.ReadAllBytes(inputFilePath);
 
             ILogger log = LogHelper.Instance.GetLogger<Program>();
@@ -48,7 +47,6 @@ namespace database_and_log
                     seq_id: test_seq_id,
                     app_id: test_app_id,
                     pred_timestamp: endTime,
-                    input_audio: audioFile,
                     input_word: "test_input_word",
                     return_text: "test_return_text");
 
@@ -60,9 +58,6 @@ namespace database_and_log
                     proc_start_time: startTime,
                     proc_end_time: endTime,
                     stream_duration: (long)(endTime - startTime).TotalMilliseconds);
-
-                // Read from db
-                databaseHelper.ReadAudioStream(test_session_id, test_seq_id, outputFilePath);
             }
 
             /* Demo code for updating AudioStreamPrediction
