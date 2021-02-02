@@ -12,13 +12,19 @@ namespace BackendProxy2ASR
     {
         static void Main(string[] args)
         {
-            if (args.Length != 1)
+            string configPath = "./config.json";
+            if (args.Length > 0)
             {
-                Console.WriteLine("Invalid arguments. Please pass in path to config.json file.");
-                return;
+                //Console.WriteLine("Invalid arguments. Please pass in path to config.json file.");
+                //return;
+                Console.WriteLine("Read config.json file from given directory.");
+                configPath = args[0];
+            }
+            else
+            {
+                Console.WriteLine("Read config.json file from default directory.");
             }
 
-            string configPath = args[0];
             configPath = Path.GetFullPath(configPath, Directory.GetCurrentDirectory());
             if (!File.Exists(configPath))
             {
@@ -34,7 +40,12 @@ namespace BackendProxy2ASR
             LogHelper.Initialize(config);
             ILogger logger = LogHelper.GetLogger<Program>();
 
-            ProxyASR proxy = new ProxyASR(config);
+            DatabaseHelper databaseHelper = new DatabaseHelper(config);
+            
+            bool connectionResult = databaseHelper.Open();
+            logger.Information($"Opening connection success? : {connectionResult}");
+
+            ProxyASR proxy = new ProxyASR(config, databaseHelper);
             proxy.Start();
 
             var input = Console.ReadLine();
@@ -47,6 +58,9 @@ namespace BackendProxy2ASR
                 }
                 input = Console.ReadLine();
             }
+
+            connectionResult = databaseHelper.Close();
+            logger.Information($"Closing connection success? : {connectionResult}");
         }
     }
 }

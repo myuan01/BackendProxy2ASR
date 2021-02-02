@@ -40,16 +40,16 @@ namespace BackendProxy2ASR
         //private DatabaseHelper dbhelper = null;
         private Dictionary<String, SessionHelper> m_sessionID2Helper;
 
-        private DatabaseHelper databaseHelper;
+        private DatabaseHelper m_databaseHelper;
         private ILogger _logger;
         private UserCredential savedUserCrednetial = new UserCredential();
 
         //--------------------------------------------------------------------->
         // C'TOR: initialize member variables
         //--------------------------------------------------------------------->
-        public ProxyASR(IConfiguration config)
+        public ProxyASR(IConfiguration config, DatabaseHelper databaseHelper)
         {
-            databaseHelper = new DatabaseHelper(config);
+            //databaseHelper = new DatabaseHelper(config);
             _logger = LogHelper.GetLogger<ProxyASR>();
 
             m_proxyPort = Int32.Parse(config.GetSection("Proxy")["proxyPort"]);
@@ -60,8 +60,9 @@ namespace BackendProxy2ASR
             m_sessionID2sock = new Dictionary<String, IWebSocketConnection>();
             m_sock2sessionID = new Dictionary<IWebSocketConnection, String>();
             m_sessionID2Helper = new Dictionary<String, SessionHelper>();
+            m_databaseHelper = databaseHelper;
 
-            m_commASR = CommASR.Create(m_asrIP, m_asrPort, m_sampleRate, m_sessionID2sock, m_sessionID2Helper, config);
+            m_commASR = CommASR.Create(m_asrIP, m_asrPort, m_sampleRate, m_sessionID2sock, m_sessionID2Helper, databaseHelper);
         }
 
 
@@ -191,42 +192,43 @@ namespace BackendProxy2ASR
                     session.m_sequence2inputword[aps.sequence_id] = aps.right_text;
                     session.m_sequenceQueue.Enqueue(aps.sequence_id);
                     session.m_sequenceStartTime[aps.sequence_id] = DateTime.UtcNow;
+                    session.m_sequencePredictionResult[aps.sequence_id] = new List<string>();
                 }
             }
             catch (Exception e)
             {
                 Console.WriteLine("Retrieve Session informatino error: " + e.ToString());
             }
-            
+
 
             //----------------------------------------------------------------->
             // Initialize recrod into database
             //----------------------------------------------------------------->
-            /**
-            bool connectionResult = databaseHelper.Open();
-            _logger.Information("Opening connection success? : " + connectionResult.ToString());
 
             // update asr_audio_stream_prediction
-            databaseHelper.InsertAudioStreamPrediction(
-                user_id: 1,
-                device_id: "device1",
-                app_id: 1,
-                session_id: aps.session_id,
-                seq_id: aps.sequence_id,
-                pred_timestamp: DateTime.UtcNow,
-                input_word: aps.right_text,
-                return_text: "");
+            if (m_databaseHelper.ConnectionStatus == true)
+            {
+                m_databaseHelper.InsertAudioStreamPrediction(
+                    user_id: 1,
+                    device_id: "device1",
+                    app_id: 1,
+                    session_id: aps.session_id,
+                    seq_id: aps.sequence_id,
+                    pred_timestamp: DateTime.UtcNow,
+                    input_word: aps.right_text,
+                    return_text: "");
 
-            databaseHelper.InsertAudioStreamInfo(
-                user_id: 1,
-                device_id: "device1",
-                app_id: 1,
-                session_id: aps.session_id,
-                seq_id: aps.sequence_id,
-                proc_start_time: DateTime.UtcNow,
-                proc_end_time: DateTime.UtcNow,
-                stream_duration: 0);
-            **/
+                m_databaseHelper.InsertAudioStreamInfo(
+                    user_id: 1,
+                    device_id: "device1",
+                    app_id: 1,
+                    session_id: aps.session_id,
+                    seq_id: aps.sequence_id,
+                    proc_start_time: DateTime.UtcNow,
+                    proc_end_time: DateTime.UtcNow,
+                    stream_duration: 0);
+            }
+
         }
 
         //--------------------------------------------------------------------->

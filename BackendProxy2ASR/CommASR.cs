@@ -22,22 +22,23 @@ namespace BackendProxy2ASR
         private Dictionary<String, WebSocketWrapper> m_sessionID2wsWrap;
         private Dictionary<WebSocketWrapper, String> m_wsWrap2sessionID;
 
-        private DatabaseHelper databaseHelper;
+        private DatabaseHelper m_databaseHelper;
 
         private ILogger _logger = LogHelper.GetLogger<CommASR>();
 
-        protected CommASR(String asrIP, int asrPort, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, Dictionary<String, SessionHelper> sessionID2helper, IConfiguration config)
+        protected CommASR(String asrIP, int asrPort, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, 
+            Dictionary<String, SessionHelper> sessionID2helper, DatabaseHelper databaseHelper)
         {
             m_asrIP = asrIP;
             m_asrPort = asrPort;
             m_sampleRate = sampleRate;
             m_sessionID2sock = sessionID2sock;
             m_sessionID2helper = sessionID2helper;
+            m_databaseHelper = databaseHelper;
 
             m_sessionID2wsWrap = new Dictionary<String, WebSocketWrapper>();
             m_wsWrap2sessionID = new Dictionary<WebSocketWrapper, String>();
 
-            databaseHelper = new DatabaseHelper(config);
         }
 
         //----------------------------------------------------------------------------------------->
@@ -53,9 +54,10 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         // Creates a new instance
         //----------------------------------------------------------------------------------------->
-        public static CommASR Create(String ip, int port, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, Dictionary<String, SessionHelper> sessionID2helper, IConfiguration config)
+        public static CommASR Create(String ip, int port, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, 
+            Dictionary<String, SessionHelper> sessionID2helper, DatabaseHelper databaseHelper)
         {
-            return new CommASR(ip, port, sampleRate, sessionID2sock, sessionID2helper, config);
+            return new CommASR(ip, port, sampleRate, sessionID2sock, sessionID2helper, databaseHelper);
         }
 
         public void ConnectASR(String sessionID)
@@ -80,7 +82,7 @@ namespace BackendProxy2ASR
                     _logger.Information("EngineASR -> CommASR: " + msg + "  [sessionID = " + sessionID + ", sessionID = " + m_wsWrap2sessionID[sock] + "]");
                     var ProxySocket = m_sessionID2sock[sessionID];
                     ProxySocket.Send(msg);
-                    //InsertPredictionToDB(msg, sessionID);
+                    InsertPredictionToDB(msg, sessionID);
                 }
             );
 
@@ -196,26 +198,24 @@ namespace BackendProxy2ASR
                 {
                     sequenceID = session.GetCurrentSequenceID();
                     session.m_uttID2sequence[uttid] = sequenceID;
-                    session.m_sequencePredictionResult[sequenceID] = new List<string>();
                 }
 
-                if (ASRResult.result != "" && ASRResult.cmd == "asrfull")
+                if (ASRResult.cmd == "asrfull")
                 {
-
-                    bool connectionResult = databaseHelper.Open();
-                    _logger.Information("Opening connection success? : " + connectionResult.ToString());
-                    if (connectionResult)
+                    if (m_databaseHelper.ConnectionStatus == true)
                     {
                         DateTime startTime = session.m_sequenceStartTime[sequenceID];
                         DateTime endTime = DateTime.UtcNow;
                         byte[] input_audio = session.RetrieveSequenceBytes(sequenceID);
+                        var bytesLength = session.m_sequenceBytesLength[sequenceID];
 
                         //Add preduction result
                         session.m_sequencePredictionResult[sequenceID].Add(ASRResult.result);
                         var currentResult = String.Join(", ", session.m_sequencePredictionResult[sequenceID].ToArray());
+                        _logger.Information("Result update to database: " + currentResult);
 
                         // update audio prediction result
-                        databaseHelper.UpdateAudioStreamPrediction(
+                        m_databaseHelper.UpdateAudioStreamPrediction(
                             session_id: sessionID,
                             seq_id: sequenceID,
                             pred_timestamp: endTime,
@@ -223,16 +223,14 @@ namespace BackendProxy2ASR
                             //return_text: ASRResult.result
                             );
                         // ipdate audio stream info
-                        databaseHelper.UpdateAudioStreamInfo(
+                        m_databaseHelper.UpdateAudioStreamInfo(
                             session_id: sessionID,
                             seq_id: sequenceID,
                             proc_end_time: endTime,
-                            stream_duration: (long)(endTime - startTime).TotalMilliseconds
+                            //stream_duration: (long)(endTime - startTime).TotalMilliseconds
+                            stream_duration: (long)Math.Round(Decimal.Divide((decimal)bytesLength, m_sampleRate), 3)*1000
                             );
                     }
-
-                    connectionResult = databaseHelper.Close();
-                    _logger.Information("Closing connection success? : " + connectionResult.ToString());
                 }
             }
             catch (Exception e)

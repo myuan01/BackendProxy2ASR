@@ -13,6 +13,7 @@ namespace database_and_log
     {
         private NpgsqlConnection _conn;
         private ILogger _logger = LogHelper.GetLogger<DatabaseHelper>();
+        public bool ConnectionStatus { get; set; }
 
         public DatabaseHelper(IConfiguration config)
         {
@@ -41,6 +42,7 @@ namespace database_and_log
             {
                 _logger.Information("Opening database connection...");
                 _conn.Open();
+                ConnectionStatus = true;
                 return true;
             }
             catch (Exception e)
@@ -57,6 +59,7 @@ namespace database_and_log
             {
                 _logger.Information("Closing database connection...");
                 _conn.Close();
+                ConnectionStatus = false;
                 return true;
             }
             catch (Exception e)

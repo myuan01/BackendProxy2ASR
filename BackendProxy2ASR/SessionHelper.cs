@@ -8,6 +8,7 @@ namespace BackendProxy2ASR
     {
         public readonly string m_sessionID;
         public readonly DateTime SesssionStartTime;
+        public readonly long SampleRate;
 
         public Dictionary<int, string> m_sequence2uttID { get; set; }
         public Dictionary<string, int> m_uttID2sequence { get; set; }
@@ -15,6 +16,7 @@ namespace BackendProxy2ASR
         public Dictionary<int, string> m_sequence2inputword { get; set; }
         public Dictionary<int, DateTime> m_sequenceStartTime { get; set; }
         public Dictionary<int, List<byte>> m_sequenceBytes { get; set; }
+        public Dictionary<int, double> m_sequenceBytesLength { get; set; }
         public Dictionary<int, List<string>> m_sequencePredictionResult { get; set; }
         public Queue<int> m_sequenceQueue { get; set; }
 
@@ -36,6 +38,7 @@ namespace BackendProxy2ASR
             m_sequence2inputword = new Dictionary<int, string>();
             m_sequenceStartTime = new Dictionary<int, DateTime>();
             m_sequenceBytes = new Dictionary<int, List<byte>>();
+            m_sequenceBytesLength = new Dictionary<int, double>();
             m_sequencePredictionResult = new Dictionary<int, List<string>>();
             m_sequenceQueue = new Queue<int>();
         }
@@ -76,8 +79,10 @@ namespace BackendProxy2ASR
             if (m_sequenceBytes.ContainsKey(seqenceID) == false)
             {
                 m_sequenceBytes[seqenceID] = new List<byte>();
+                m_sequenceBytesLength[seqenceID] = 0;
             }
             m_sequenceBytes[seqenceID].AddRange(data);
+            m_sequenceBytesLength[seqenceID] += (double)data.Length;
         }
 
         //----------------------------------------------------------------------------------------->
