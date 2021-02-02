@@ -78,7 +78,7 @@ namespace BackendProxy2ASR
 
             var server = new WebSocketServer("ws://0.0.0.0:" + m_proxyPort);
             _logger.Information("Starting Fleck WebSocket Server...");
-            _logger.Information("port: " + m_proxyPort + "  samplerate: " + m_sampleRate);
+            _logger.Information("Service_Port: " + m_proxyPort + "; ASR_Port: " + m_asrPort + ";  ASR_IP: " + m_asrIP +  ";  Samplerate: " + m_sampleRate);
 
             server.Start(socket =>
                 {
@@ -112,7 +112,7 @@ namespace BackendProxy2ASR
         {
             _logger.Information("WS Connect...");
             var session = new SessionHelper();
-            sock.Send("0{\"session_id\":" + session.m_sessionID + "}");
+            sock.Send("0{\"session_id\": \"" + session.m_sessionID + "\"}");
             m_sessionID2Helper[session.m_sessionID] = session;
             m_allSockets.Add(sock);
         }
@@ -162,10 +162,7 @@ namespace BackendProxy2ASR
             }
 
             AnswerPlusSessionID aps = JsonConvert.DeserializeObject<AnswerPlusSessionID>(msg);
-            _logger.Information(aps.right_text);
-            _logger.Information(aps.session_id);
-            _logger.Information(aps.sequence_id.ToString());
-
+            
             if (m_sock2sessionID.ContainsKey(sock)==false)
             {
                 //------------------------------------------------------------->

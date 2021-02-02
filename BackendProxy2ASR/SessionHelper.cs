@@ -8,7 +8,6 @@ namespace BackendProxy2ASR
     {
         public readonly string m_sessionID;
         public readonly DateTime SesssionStartTime;
-        public readonly long SampleRate;
 
         public Dictionary<int, string> m_sequence2uttID { get; set; }
         public Dictionary<string, int> m_uttID2sequence { get; set; }
@@ -50,11 +49,10 @@ namespace BackendProxy2ASR
         {
             StringBuilder sessionID = new StringBuilder("");
 
+            Guid g = Guid.NewGuid();
+            sessionID.Append(g);
             // for testing propose only
-
-            //Guid g = Guid.NewGuid();
-            //sessionID.Append(g);
-            sessionID.Append("90009");
+            //sessionID.Append("90009");
             return sessionID.ToString();
         }
 
