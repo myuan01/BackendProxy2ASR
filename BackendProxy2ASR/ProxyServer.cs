@@ -141,8 +141,6 @@ namespace BackendProxy2ASR
             Console.OutputEncoding = Encoding.UTF8;
             _logger.Information(msg);
 
-            sock.Send("Echo: " + msg);
-
             if (msg.Contains("username") == true || msg.Contains("password") == true)
             {
                 Console.WriteLine("Receive user information...");
