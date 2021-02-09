@@ -37,12 +37,11 @@ namespace BackendProxy2ASR
         private Dictionary<IWebSocketConnection, String> m_sock2sessionID;
 
         private CommASR m_commASR = null;
-        //private DatabaseHelper dbhelper = null;
+
         private Dictionary<String, SessionHelper> m_sessionID2Helper;
 
         private DatabaseHelper m_databaseHelper;
         private ILogger _logger;
-        private UserCredential savedUserCrednetial = new UserCredential();
 
         //--------------------------------------------------------------------->
         // C'TOR: initialize member variables
@@ -111,10 +110,31 @@ namespace BackendProxy2ASR
         private void OnConnect(IWebSocketConnection sock)
         {
             _logger.Information("WS Connect...");
-            var session = new SessionHelper();
-            sock.Send("0{\"session_id\": \"" + session.m_sessionID + "\"}");
-            m_sessionID2Helper[session.m_sessionID] = session;
-            m_allSockets.Add(sock);
+
+            // authenticate client
+            try
+            {
+                string authHeader = sock.ConnectionInfo.Headers["Authorization"];
+                Console.WriteLine(authHeader);
+
+                bool is_user = IsUser(authHeader);
+
+                if (is_user)
+                {
+                    var session = new SessionHelper();
+                    sock.Send("0{\"session_id\": \"" + session.m_sessionID + "\"}");
+                    m_sessionID2Helper[session.m_sessionID] = session;
+                    m_allSockets.Add(sock);
+                    return;
+                }
+            }
+            catch (System.Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+            }
+
+            _logger.Error("Fail to verify user. Closing socket connection.");
+            sock.Close();
         }
 
         //--------------------------------------------------------------------->
@@ -140,18 +160,6 @@ namespace BackendProxy2ASR
         {
             Console.OutputEncoding = Encoding.UTF8;
             _logger.Information(msg);
-
-            if (msg.Contains("username") == true || msg.Contains("password") == true)
-            {
-                Console.WriteLine("Receive user information...");
-                UserInfo user = JsonConvert.DeserializeObject<UserInfo>(msg);
-                if (CheckUserCredential(user.username, user.password) == false)
-                {
-                    sock.OnClose();
-                    //return;
-                }
-                return;
-            }
 
             if (msg.Contains("right_text")==false || msg.Contains("session_id")==false || msg.Contains("sequence_id") == false)
             {
@@ -239,22 +247,24 @@ namespace BackendProxy2ASR
             session.StoreIncommingBytes(sequenceID, data);
         }
 
-        //--------------------------------------------------------------------->
-        // Check user credential
-        //--------------------------------------------------------------------->
-        private bool CheckUserCredential (string username, string password)
+
+        private bool IsUser(string authString)
         {
-            var savedCredential = savedUserCrednetial.Credential;
-            if (savedCredential.ContainsKey(username) == false)
+            if (authString.Contains("Basic"))
             {
-                Console.WriteLine("Invalid username. Disconnect...");
-                return false;
-            } else if (savedCredential[username] != password)
-            {
-                Console.WriteLine("Incorrect password for " + username+ ". Disconnect...");
-                return false;
+                string encodedCredentials = authString.Split(' ')[1];
+                string[] decodedCredentials = Encoding.UTF8
+                    .GetString(Convert.FromBase64String(encodedCredentials))
+                    .Split(':');
+                string username = decodedCredentials[0];
+                string password = decodedCredentials[1];
+
+                bool is_user = m_databaseHelper.Is_User(username, password);
+
+                return is_user;
             }
-            return true;
+
+            return false;
         }
     }
 
