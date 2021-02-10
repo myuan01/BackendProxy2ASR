@@ -115,8 +115,6 @@ namespace BackendProxy2ASR
             try
             {
                 string authHeader = sock.ConnectionInfo.Headers["Authorization"];
-                Console.WriteLine(authHeader);
-
                 bool is_user = IsUser(authHeader);
 
                 if (is_user)
@@ -133,7 +131,9 @@ namespace BackendProxy2ASR
                 _logger.Error(exception, exception.Message);
             }
 
-            _logger.Error("Fail to verify user. Closing socket connection.");
+            string errorMessage = "Fail to authenticate user. Closing socket connection.";
+            _logger.Error(errorMessage);
+            sock.Send(errorMessage);
             sock.Close();
         }
 
@@ -158,6 +158,12 @@ namespace BackendProxy2ASR
         //--------------------------------------------------------------------->
         private void OnMessage(IWebSocketConnection sock, String msg)
         {
+            if (!m_allSockets.Contains(sock))
+            {
+                _logger.Error("User not authenticated!");
+                return;
+            }
+
             Console.OutputEncoding = Encoding.UTF8;
             _logger.Information(msg);
 
@@ -239,6 +245,12 @@ namespace BackendProxy2ASR
         //--------------------------------------------------------------------->
         private void OnBinaryData(IWebSocketConnection sock, byte[] data)
         {
+            if (!m_allSockets.Contains(sock))
+            {
+                _logger.Error("User not authenticated!");
+                return;
+            }
+
             var sessionID = m_sock2sessionID[sock];
             m_commASR.SendBinaryData(sessionID, data);
 
