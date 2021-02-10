@@ -259,7 +259,10 @@ namespace BackendProxy2ASR
             session.StoreIncommingBytes(sequenceID, data);
         }
 
-
+        //--------------------------------------------------------------------->
+        // Helper function that authenticates a user using value from
+        // "Authorization" field in HTTP header
+        //--------------------------------------------------------------------->
         private bool IsUser(string authString)
         {
             if (authString.Contains("Basic"))
