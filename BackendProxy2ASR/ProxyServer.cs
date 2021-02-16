@@ -128,15 +128,22 @@ namespace BackendProxy2ASR
             // authenticate client
             try
             {
-                string authHeader = sock.ConnectionInfo.Headers["Authorization"];
-                bool is_user = IsUser(authHeader);
-
+                //string authHeader = sock.ConnectionInfo.Headers["Authorization"];
+                //bool is_user = IsUser(authHeader);
+                bool is_user = true;
                 if (is_user)
                 {
                     var session = new SessionHelper();
                     sock.Send("0{\"session_id\": \"" + session.m_sessionID + "\"}");
                     m_sessionID2Helper[session.m_sessionID] = session;
                     m_allSockets.Add(sock);
+
+                    m_sock2sessionID[sock] = session.m_sessionID;
+                    m_sessionID2sock[session.m_sessionID] = sock;
+
+                    _logger.Information("map sock -> sessionID: " + session.m_sessionID);
+                    _logger.Information("map sessionID " + session.m_sessionID + " -> sock");
+
                     Task.Run(() => StartPing(sock));
                     return;
                 }
@@ -159,12 +166,15 @@ namespace BackendProxy2ASR
         {
             _logger.Information("WS Disconnect...");
             // Disconnect from ASR engine
-            var session_id = m_sock2sessionID[sock];
-            if (String.IsNullOrEmpty(session_id) == false)
+            if (m_sock2sessionID.ContainsKey(sock) == true)
             {
+                var session_id = m_sock2sessionID[sock];
                 m_commASR.DisconnectASR(session_id);
+
+                m_sessionID2Helper.Remove(session_id);
+                m_sessionID2sock.Remove(session_id);
             }
-            
+            m_sock2sessionID.Remove(sock);
             m_allSockets.Remove(sock);
         }
 
@@ -189,21 +199,7 @@ namespace BackendProxy2ASR
             }
 
             AnswerPlusSessionID aps = JsonConvert.DeserializeObject<AnswerPlusSessionID>(msg);
-            
-            if (m_sock2sessionID.ContainsKey(sock)==false)
-            {
-                //------------------------------------------------------------->
-                // it is a new session from client:
-                //      (1) create websocket connection to ASR Engine
-                //------------------------------------------------------------->
-                m_sock2sessionID[sock] = aps.session_id;
-                m_sessionID2sock[aps.session_id] = sock;
-
-                _logger.Information("map sock -> sessionID: " + aps.session_id);
-                _logger.Information("map sessionID " + aps.session_id + " -> sock");
-
-                m_commASR.ConnectASR(aps.session_id);
-            }
+            m_commASR.ConnectASR(aps.session_id);
 
             //----------------------------------------------------------------->
             // Store session and sequence information
@@ -276,7 +272,7 @@ namespace BackendProxy2ASR
 
         private void OnPong(IWebSocketConnection sock, byte[] data)
         {
-            Console.WriteLine("Receive Pong from client: " + data.Length);
+            _logger.Information("Receive Pong from client.");
         }
 
         //--------------------------------------------------------------------->
