@@ -59,8 +59,8 @@ namespace BackendProxy2ASR
                 input = Console.ReadLine();
             }
 
-            connectionResult = databaseHelper.Close();
-            logger.Information($"Closing connection success? : {connectionResult}");
+            //connectionResult = databaseHelper.Close();
+            //logger.Information($"Closing connection success? : {connectionResult}");
         }
     }
 }
