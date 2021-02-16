@@ -9,6 +9,8 @@ namespace BackendProxy2ASR
         public readonly string m_sessionID;
         public readonly DateTime SesssionStartTime;
 
+        public bool IsConnectedToASR;
+
         public Dictionary<int, string> m_sequence2uttID { get; set; }
         public Dictionary<string, int> m_uttID2sequence { get; set; }
 
@@ -28,6 +30,7 @@ namespace BackendProxy2ASR
         {
             m_sessionID = CreateSessionID();
             SesssionStartTime = DateTime.UtcNow;
+            IsConnectedToASR = false;
 
             // sequence <-> uttid
             m_sequence2uttID = new Dictionary<int, string>();

@@ -94,7 +94,15 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         public void SendBytes(byte[] bytes)
         {
-            SendBytesAsync(bytes);
+            try
+            {
+                SendBytesAsync(bytes);
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, e.Message);
+            }
+            //SendBytesAsync(bytes);
         }
 
         //----------------------------------------------------------------------------------------->
@@ -124,26 +132,33 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         private async void SendMessageAsync(string message)
         {
-            if (_ws.State != WebSocketState.Open)
+            try
             {
-                throw new Exception("Connection is not open.");
-            }
-
-            var messageBuffer = Encoding.UTF8.GetBytes(message);
-            var messagesCount = (int)Math.Ceiling((double)messageBuffer.Length / SendChunkSize);
-
-            for (var i = 0; i < messagesCount; i++)
-            {
-                var offset = (SendChunkSize * i);
-                var count = SendChunkSize;
-                var lastMessage = ((i + 1) == messagesCount);
-
-                if ((count * (i + 1)) > messageBuffer.Length)
+                if (_ws.State != WebSocketState.Open)
                 {
-                    count = messageBuffer.Length - offset;
+                    throw new Exception("Connection is not open.");
                 }
 
-                await _ws.SendAsync(new ArraySegment<byte>(messageBuffer, offset, count), WebSocketMessageType.Text, lastMessage, _cancellationToken);
+                var messageBuffer = Encoding.UTF8.GetBytes(message);
+                var messagesCount = (int)Math.Ceiling((double)messageBuffer.Length / SendChunkSize);
+
+                for (var i = 0; i < messagesCount; i++)
+                {
+                    var offset = (SendChunkSize * i);
+                    var count = SendChunkSize;
+                    var lastMessage = ((i + 1) == messagesCount);
+
+                    if ((count * (i + 1)) > messageBuffer.Length)
+                    {
+                        count = messageBuffer.Length - offset;
+                    }
+
+                    await _ws.SendAsync(new ArraySegment<byte>(messageBuffer, offset, count), WebSocketMessageType.Text, lastMessage, _cancellationToken);
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
 
@@ -153,26 +168,33 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         private async void SendBytesAsync(byte[] bytes)
         {
-            if (_ws.State != WebSocketState.Open)
+            try
             {
-                throw new Exception("Connection is not open.");
-            }
-
-            var messageBuffer = bytes;
-            var messagesCount = (int)Math.Ceiling((double)messageBuffer.Length / SendChunkSize);
-
-            for (var i = 0; i < messagesCount; i++)
-            {
-                var offset = (SendChunkSize * i);
-                var count = SendChunkSize;
-                var lastMessage = ((i + 1) == messagesCount);
-
-                if ((count * (i + 1)) > messageBuffer.Length)
+                if (_ws.State != WebSocketState.Open)
                 {
-                    count = messageBuffer.Length - offset;
+                    throw new Exception("Connection is not open.");
                 }
 
-                await _ws.SendAsync(new ArraySegment<byte>(bytes, offset, count), WebSocketMessageType.Binary, lastMessage, _cancellationToken);
+                var messageBuffer = bytes;
+                var messagesCount = (int)Math.Ceiling((double)messageBuffer.Length / SendChunkSize);
+
+                for (var i = 0; i < messagesCount; i++)
+                {
+                    var offset = (SendChunkSize * i);
+                    var count = SendChunkSize;
+                    var lastMessage = ((i + 1) == messagesCount);
+
+                    if ((count * (i + 1)) > messageBuffer.Length)
+                    {
+                        count = messageBuffer.Length - offset;
+                    }
+
+                    await _ws.SendAsync(new ArraySegment<byte>(bytes, offset, count), WebSocketMessageType.Binary, lastMessage, _cancellationToken);
+                }
+            }
+            catch (Exception e)
+            {
+                throw e;
             }
         }
 

@@ -169,7 +169,14 @@ namespace BackendProxy2ASR
                 //----------------------------------------------->
                 //send actual voice stream
                 //----------------------------------------------->
-                m_sessionID2wsWrap[sessionID].SendBytes(data);
+                try
+                {
+                    m_sessionID2wsWrap[sessionID].SendBytes(data);
+                }
+                catch (Exception e)
+                {
+                    _logger.Error("Catch exception in sendbinarydata" + e.Message);
+                }
             }
             else
             {

@@ -128,9 +128,9 @@ namespace BackendProxy2ASR
             // authenticate client
             try
             {
-                //string authHeader = sock.ConnectionInfo.Headers["Authorization"];
-                //bool is_user = IsUser(authHeader);
-                bool is_user = true;
+                string authHeader = sock.ConnectionInfo.Headers["Authorization"];
+                bool is_user = IsUser(authHeader);
+                //bool is_user = true;
                 if (is_user)
                 {
                     var session = new SessionHelper();
@@ -199,14 +199,21 @@ namespace BackendProxy2ASR
             }
 
             AnswerPlusSessionID aps = JsonConvert.DeserializeObject<AnswerPlusSessionID>(msg);
-            m_commASR.ConnectASR(aps.session_id);
+
+            var session = m_sessionID2Helper[aps.session_id];
+
+            if (session.IsConnectedToASR == false)
+            {
+                m_commASR.ConnectASR(aps.session_id);
+                session.IsConnectedToASR = true;
+            }
 
             //----------------------------------------------------------------->
             // Store session and sequence information
             //----------------------------------------------------------------->
             try
             {
-                var session = m_sessionID2Helper[aps.session_id];
+                
                 if (session.m_sequence2inputword.ContainsKey(aps.sequence_id) == false)
                 {
                     session.m_sequence2inputword[aps.sequence_id] = aps.right_text;
