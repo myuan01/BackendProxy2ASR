@@ -202,7 +202,7 @@ namespace BackendProxy2ASR
 
                 if (ASRResult.cmd == "asrfull")
                 {
-                    if (m_databaseHelper.ConnectionStatus == true)
+                    if (m_databaseHelper.IsConnected())
                     {
                         DateTime startTime = session.m_sequenceStartTime[sequenceID];
                         DateTime endTime = DateTime.UtcNow;
