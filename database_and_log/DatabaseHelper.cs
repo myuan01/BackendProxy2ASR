@@ -270,5 +270,46 @@ namespace database_and_log
 
             return false;
         }
+
+
+        public bool Is_User(string username, string password)
+        {
+            string sqlStatement = @"SELECT public.is_user(@username, @password)";
+
+            using var cmd = new NpgsqlCommand(sqlStatement, _conn);
+            cmd.Parameters.AddWithValue("username", username);
+            cmd.Parameters.AddWithValue("password", password);
+
+            try
+            {
+                _logger.Information($"Querying database for user {username}...");
+                object? result = cmd.ExecuteScalar();
+
+                if (result != null)
+                {
+                    bool is_user = (bool)result;
+                    if (is_user)
+                    {
+                        _logger.Information($"user {username} authenticated.");
+                    }
+                    else
+                    {
+                        _logger.Error($"Invalid password for user {username}!!!");
+                    }
+
+                    return is_user;
+                }
+                else
+                {
+                    _logger.Error($"Empty result from querying user {username}");
+                    return false;
+                }
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, e.Message);
+                return false;
+            }
+        }
     }
 }

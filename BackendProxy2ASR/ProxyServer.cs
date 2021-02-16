@@ -38,12 +38,11 @@ namespace BackendProxy2ASR
         private Dictionary<IWebSocketConnection, String> m_sock2sessionID;
 
         private CommASR m_commASR = null;
-        //private DatabaseHelper dbhelper = null;
+
         private Dictionary<String, SessionHelper> m_sessionID2Helper;
 
         private DatabaseHelper m_databaseHelper;
         private ILogger _logger;
-        private UserCredential savedUserCrednetial = new UserCredential();
 
         // flag for ping-pong message
         private static readonly byte[] _pingMessage = { 2, 3 };
@@ -126,11 +125,31 @@ namespace BackendProxy2ASR
         private void OnConnect(IWebSocketConnection sock)
         {
             _logger.Information("WS Connect...");
-            var session = new SessionHelper();
-            sock.Send("0{\"session_id\": \"" + session.m_sessionID + "\"}");
-            m_sessionID2Helper[session.m_sessionID] = session;
-            m_allSockets.Add(sock);
-            Task.Run(() => StartPing(sock));
+            // authenticate client
+            try
+            {
+                string authHeader = sock.ConnectionInfo.Headers["Authorization"];
+                bool is_user = IsUser(authHeader);
+
+                if (is_user)
+                {
+                    var session = new SessionHelper();
+                    sock.Send("0{\"session_id\": \"" + session.m_sessionID + "\"}");
+                    m_sessionID2Helper[session.m_sessionID] = session;
+                    m_allSockets.Add(sock);
+                    Task.Run(() => StartPing(sock));
+                    return;
+                }
+            }
+            catch (System.Exception exception)
+            {
+                _logger.Error(exception, exception.Message);
+            }
+
+            string errorMessage = "Fail to authenticate user. Closing socket connection.";
+            _logger.Error(errorMessage);
+            sock.Send(errorMessage);
+            sock.Close();
         }
 
         //--------------------------------------------------------------------->
@@ -154,20 +173,14 @@ namespace BackendProxy2ASR
         //--------------------------------------------------------------------->
         private void OnMessage(IWebSocketConnection sock, String msg)
         {
-            Console.OutputEncoding = Encoding.UTF8;
-            _logger.Information(msg);
-
-            if (msg.Contains("username") == true || msg.Contains("password") == true)
+            if (!m_allSockets.Contains(sock))
             {
-                Console.WriteLine("Receive user information...");
-                UserInfo user = JsonConvert.DeserializeObject<UserInfo>(msg);
-                if (CheckUserCredential(user.username, user.password) == false)
-                {
-                    sock.OnClose();
-                    //return;
-                }
+                _logger.Error("User not authenticated!");
                 return;
             }
+
+            Console.OutputEncoding = Encoding.UTF8;
+            _logger.Information(msg);
 
             if (msg.Contains("right_text")==false || msg.Contains("session_id")==false || msg.Contains("sequence_id") == false)
             {
@@ -247,6 +260,12 @@ namespace BackendProxy2ASR
         //--------------------------------------------------------------------->
         private void OnBinaryData(IWebSocketConnection sock, byte[] data)
         {
+            if (!m_allSockets.Contains(sock))
+            {
+                _logger.Error("User not authenticated!");
+                return;
+            }
+
             var sessionID = m_sock2sessionID[sock];
             m_commASR.SendBinaryData(sessionID, data);
 
@@ -261,21 +280,26 @@ namespace BackendProxy2ASR
         }
 
         //--------------------------------------------------------------------->
-        // Check user credential
+        // Helper function that authenticates a user using value from
+        // "Authorization" field in HTTP header
         //--------------------------------------------------------------------->
-        private bool CheckUserCredential (string username, string password)
+        private bool IsUser(string authString)
         {
-            var savedCredential = savedUserCrednetial.Credential;
-            if (savedCredential.ContainsKey(username) == false)
+            if (authString.Contains("Basic"))
             {
-                Console.WriteLine("Invalid username. Disconnect...");
-                return false;
-            } else if (savedCredential[username] != password)
-            {
-                Console.WriteLine("Incorrect password for " + username+ ". Disconnect...");
-                return false;
+                string encodedCredentials = authString.Split(' ')[1];
+                string[] decodedCredentials = Encoding.UTF8
+                    .GetString(Convert.FromBase64String(encodedCredentials))
+                    .Split(':');
+                string username = decodedCredentials[0];
+                string password = decodedCredentials[1];
+
+                bool is_user = m_databaseHelper.Is_User(username, password);
+
+                return is_user;
             }
-            return true;
+
+            return false;
         }
 
         private async Task StartPing(IWebSocketConnection sock)
