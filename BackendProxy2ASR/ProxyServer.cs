@@ -217,7 +217,7 @@ namespace BackendProxy2ASR
             //----------------------------------------------------------------->
 
             // update asr_audio_stream_prediction
-            if (m_databaseHelper.ConnectionStatus == true)
+            if (m_databaseHelper.IsConnected())
             {
                 m_databaseHelper.InsertAudioStreamPrediction(
                     user_id: 1,

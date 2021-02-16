@@ -42,8 +42,8 @@ namespace BackendProxy2ASR
 
             DatabaseHelper databaseHelper = new DatabaseHelper(config);
             
-            //bool connectionResult = databaseHelper.Open();
-            //logger.Information($"Opening connection success? : {connectionResult}");
+            bool connectionResult = databaseHelper.Open();
+            logger.Information($"Opening connection success? : {connectionResult}");
 
             ProxyASR proxy = new ProxyASR(config, databaseHelper);
             proxy.Start();

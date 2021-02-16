@@ -6,6 +6,7 @@
         "samplerate": 16000
     },
     "Database": {
+        "ToConnect": true,
         "Host": "localhost",
         "Username": "postgres",
         "Password": "password",
