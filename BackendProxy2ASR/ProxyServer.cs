@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Fleck;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
@@ -43,6 +44,10 @@ namespace BackendProxy2ASR
         private DatabaseHelper m_databaseHelper;
         private ILogger _logger;
         private UserCredential savedUserCrednetial = new UserCredential();
+
+        // flag for ping-pong message
+        private static readonly byte[] _pingMessage = { 2, 3 };
+        private static double _pingInterval = 10000;
 
         //--------------------------------------------------------------------->
         // C'TOR: initialize member variables
@@ -91,7 +96,7 @@ namespace BackendProxy2ASR
                     {
                         OnDisconnect(socket);
                     };
-
+                    
                     socket.OnMessage = message =>
                     {
                         OnMessage(socket, message);
@@ -100,6 +105,16 @@ namespace BackendProxy2ASR
                     socket.OnBinary = data =>
                     {
                         OnBinaryData(socket, data);
+                    };
+
+                    if (socket.IsAvailable == false)
+                    {
+                        Console.WriteLine("socket not avaliable");
+                    }
+
+                    socket.OnPong = pong =>
+                    {
+                        OnPong(socket, pong);
                     };
                 }
             );
@@ -115,6 +130,7 @@ namespace BackendProxy2ASR
             sock.Send("0{\"session_id\": \"" + session.m_sessionID + "\"}");
             m_sessionID2Helper[session.m_sessionID] = session;
             m_allSockets.Add(sock);
+            Task.Run(() => StartPing(sock));
         }
 
         //--------------------------------------------------------------------->
@@ -239,6 +255,11 @@ namespace BackendProxy2ASR
             session.StoreIncommingBytes(sequenceID, data);
         }
 
+        private void OnPong(IWebSocketConnection sock, byte[] data)
+        {
+            Console.WriteLine("Receive Pong from client: " + data.Length);
+        }
+
         //--------------------------------------------------------------------->
         // Check user credential
         //--------------------------------------------------------------------->
@@ -255,6 +276,21 @@ namespace BackendProxy2ASR
                 return false;
             }
             return true;
+        }
+
+        private async Task StartPing(IWebSocketConnection sock)
+        {
+
+            while (sock.IsAvailable)
+            {
+                _logger.Information("Send ping...");
+                await Task.Run(() => sock.SendPing(_pingMessage));
+                await Task.Delay(TimeSpan.FromMilliseconds(_pingInterval));
+            }
+
+            _logger.Error("Socket is not available.");
+            sock.OnClose();
+
         }
     }
 

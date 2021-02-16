@@ -195,7 +195,7 @@ namespace BackendProxy2ASR
 
             try
             {
-                while (_ws.State == WebSocketState.Open)
+                while (_ws.State == WebSocketState.Open )
                 {
                     var stringResult = new StringBuilder();
 
@@ -206,9 +206,17 @@ namespace BackendProxy2ASR
                         //result = await _ws.ReceiveAsync(new ArraySegment<byte>(buffer), source.Token);
                         if (result.MessageType == WebSocketMessageType.Close)
                         {
-                            await
-                                _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
-                            CallOnDisconnected();
+                            if (_ws.State == WebSocketState.Closed)
+                            {
+                                CallOnDisconnected();
+                                _ws.Dispose();
+                                return;
+                            } else
+                            {
+                                await
+                                    _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, CancellationToken.None);
+                                CallOnDisconnected();
+                            }
                         }
                         else
                         {
@@ -224,7 +232,7 @@ namespace BackendProxy2ASR
             catch (Exception e)
             {
                 _logger.Error(e, e.Message);
-                CallOnDisconnected();
+                //CallOnDisconnected();
             }
             finally
             {
