@@ -12,6 +12,9 @@
         "Password": "password",
         "Database": "ai_3_staging"
     },
+    "Auth": {
+        "ToAuthenticate": false
+    },
     "Serilog": {
         "Using": [
             "Serilog.Sinks.Console",

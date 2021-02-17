@@ -32,6 +32,7 @@ namespace BackendProxy2ASR
         private readonly String m_asrIP;
         private readonly int m_asrPort;
         private readonly int m_sampleRate;
+        private readonly bool m_toAuthenticate;
 
         private List<IWebSocketConnection> m_allSockets;
         private Dictionary<String, IWebSocketConnection> m_sessionID2sock;
@@ -56,10 +57,13 @@ namespace BackendProxy2ASR
             //databaseHelper = new DatabaseHelper(config);
             _logger = LogHelper.GetLogger<ProxyASR>();
 
+            // load config values
             m_proxyPort = Int32.Parse(config.GetSection("Proxy")["proxyPort"]);
             m_asrIP = config.GetSection("Proxy")["asrIP"];
             m_asrPort = Int32.Parse(config.GetSection("Proxy")["asrPort"]);
             m_sampleRate = Int32.Parse(config.GetSection("Proxy")["samplerate"]);
+            m_toAuthenticate = ConfigurationBinder.GetValue<bool>(config.GetSection("Auth"), "ToAuthenticate", true);
+
             m_allSockets = new List<IWebSocketConnection>();
             m_sessionID2sock = new Dictionary<String, IWebSocketConnection>();
             m_sock2sessionID = new Dictionary<IWebSocketConnection, String>();
@@ -82,7 +86,7 @@ namespace BackendProxy2ASR
 
             var server = new WebSocketServer("ws://0.0.0.0:" + m_proxyPort);
             _logger.Information("Starting Fleck WebSocket Server...");
-            _logger.Information("Service_Port: " + m_proxyPort + "; ASR_Port: " + m_asrPort + ";  ASR_IP: " + m_asrIP +  ";  Samplerate: " + m_sampleRate);
+            _logger.Information("Service_Port: " + m_proxyPort + "; ASR_Port: " + m_asrPort + ";  ASR_IP: " + m_asrIP + ";  Samplerate: " + m_sampleRate);
 
             server.Start(socket =>
                 {
@@ -95,7 +99,7 @@ namespace BackendProxy2ASR
                     {
                         OnDisconnect(socket);
                     };
-                    
+
                     socket.OnMessage = message =>
                     {
                         OnMessage(socket, message);
@@ -128,9 +132,18 @@ namespace BackendProxy2ASR
             // authenticate client
             try
             {
-                string authHeader = sock.ConnectionInfo.Headers["Authorization"];
-                bool is_user = IsUser(authHeader);
-                //bool is_user = true;
+                bool is_user = false;
+                if (m_toAuthenticate)
+                {
+                    string authHeader = sock.ConnectionInfo.Headers["Authorization"];
+                    is_user = IsUser(authHeader);
+                }
+                else
+                {
+                    _logger.Information("Not authenticating user...");
+                    is_user = true;
+                }
+
                 if (is_user)
                 {
                     var session = new SessionHelper();
@@ -192,7 +205,7 @@ namespace BackendProxy2ASR
             Console.OutputEncoding = Encoding.UTF8;
             _logger.Information(msg);
 
-            if (msg.Contains("right_text")==false || msg.Contains("session_id")==false || msg.Contains("sequence_id") == false)
+            if (msg.Contains("right_text") == false || msg.Contains("session_id") == false || msg.Contains("sequence_id") == false)
             {
                 _logger.Error("message missing 'right_text' OR 'session_id' OR 'sequence_id' .... ignored ....");
                 return;
@@ -213,7 +226,7 @@ namespace BackendProxy2ASR
             //----------------------------------------------------------------->
             try
             {
-                
+
                 if (session.m_sequence2inputword.ContainsKey(aps.sequence_id) == false)
                 {
                     session.m_sequence2inputword[aps.sequence_id] = aps.right_text;
