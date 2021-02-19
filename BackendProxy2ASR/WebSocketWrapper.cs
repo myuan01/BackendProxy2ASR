@@ -44,6 +44,11 @@ namespace BackendProxy2ASR
             return new WebSocketWrapper(uri);
         }
 
+        public WebSocketState GetWebSocketState()
+        {
+            return _ws.State;
+        }
+
         //----------------------------------------------------------------------------------------->
         // Connects to WebSocket server
         //      public interface
@@ -69,12 +74,12 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         public WebSocketWrapper Disconnect()
         {
-            if ((_ws.State == WebSocketState.Open))
-            {
+            //if ((_ws.State == WebSocketState.Open))
+            //{
                 CallOnDisconnected();
                 _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, _cancellationToken);
                 //CallOnDisconnected();
-            }
+            //}
             return this;
         }
 
@@ -100,9 +105,10 @@ namespace BackendProxy2ASR
             }
             catch (Exception e)
             {
-                _logger.Error(e, e.Message);
+                //Console.WriteLine("Catch error from sendbytes");
+                _logger.Error("Catch error from sendbytes" + e.Message);
             }
-            //SendBytesAsync(bytes);
+            
         }
 
         //----------------------------------------------------------------------------------------->
@@ -158,7 +164,8 @@ namespace BackendProxy2ASR
             }
             catch (Exception e)
             {
-                throw e;
+                _logger.Error(e, "In SendMessageAsync: " + e.Message);
+                throw;
             }
         }
 
@@ -168,11 +175,14 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         private async void SendBytesAsync(byte[] bytes)
         {
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(FatalExceptionHandler);
             try
             {
                 if (_ws.State != WebSocketState.Open)
                 {
-                    throw new Exception("Connection is not open.");
+                    //throw new Exception("Connection is not open.");
+                    _logger.Error("Connection is not open.");
+                    return;
                 }
 
                 var messageBuffer = bytes;
@@ -192,9 +202,23 @@ namespace BackendProxy2ASR
                     await _ws.SendAsync(new ArraySegment<byte>(bytes, offset, count), WebSocketMessageType.Binary, lastMessage, _cancellationToken);
                 }
             }
-            catch (Exception e)
+            catch (WebSocketException WebEx)
             {
-                throw e;
+                _logger.Error(WebEx, "In SendBytesAsync: " + WebEx.Message);
+                _ws.Dispose();
+                //throw;
+            }
+            catch (OperationCanceledException OpEx)
+            {
+                _logger.Error(OpEx, "In SendBytesAsync: " + OpEx.Message);
+                _ws.Dispose();
+                //throw;
+            }
+            catch (Exception Ex)
+            {
+                _logger.Error(Ex, "In SendBytesAsync: " + Ex.Message);
+                _ws.Dispose();
+                //throw;
             }
         }
 
@@ -214,9 +238,10 @@ namespace BackendProxy2ASR
         {
             var buffer = new byte[ReceiveChunkSize];
             CancellationTokenSource source = new CancellationTokenSource(1000);
-
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(FatalExceptionHandler);
             try
             {
+
                 while (_ws.State == WebSocketState.Open )
                 {
                     var stringResult = new StringBuilder();
@@ -251,15 +276,26 @@ namespace BackendProxy2ASR
 
                 }
             }
-            catch (Exception e)
+            catch (WebSocketException e)
             {
-                _logger.Error(e, e.Message);
+                _logger.Error(e, "In StartListen: " + e.Message);
+                //throw;
                 //CallOnDisconnected();
             }
             finally
             {
                 _ws.Dispose();
             }
+        }
+
+        private void FatalExceptionHandler(object sender, UnhandledExceptionEventArgs args)
+        {
+            Exception e = (Exception)args.ExceptionObject;
+            CallOnDisconnected();
+            _ws.Dispose();
+            Console.WriteLine(" MyHandler caught : " + e.Message);
+            Console.WriteLine(" Runtime terminating: {0}", args.IsTerminating);
+            
         }
 
         private void CallOnMessage(StringBuilder stringResult)

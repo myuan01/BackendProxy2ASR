@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.WebSockets;
 using System.Text;
 
 using Fleck;
@@ -26,6 +27,8 @@ namespace BackendProxy2ASR
 
         private ILogger _logger = LogHelper.GetLogger<CommASR>();
 
+        public WebSocketState ASRWsState;
+
         protected CommASR(String asrIP, int asrPort, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, 
             Dictionary<String, SessionHelper> sessionID2helper, DatabaseHelper databaseHelper)
         {
@@ -38,6 +41,8 @@ namespace BackendProxy2ASR
 
             m_sessionID2wsWrap = new Dictionary<String, WebSocketWrapper>();
             m_wsWrap2sessionID = new Dictionary<WebSocketWrapper, String>();
+
+            ASRWsState = WebSocketState.None;
 
         }
 
@@ -73,6 +78,7 @@ namespace BackendProxy2ASR
                     _logger.Information("Connected to ASR Engine: sessionID = " + sessionID);
                     m_sessionID2wsWrap[sessionID] = sock;
                     m_wsWrap2sessionID[sock] = sessionID;
+                    ASRWsState = WebSocketState.Open;
                     SendStartStream(sessionID);
                 }
             );
@@ -91,6 +97,7 @@ namespace BackendProxy2ASR
                     SendEndStream(sessionID);
                     m_sessionID2wsWrap.Remove(sessionID);
                     m_wsWrap2sessionID.Remove(sock);
+                    ASRWsState = WebSocketState.Closed;
                     _logger.Information("Disconnected from ASR Engine: sessionID = " + sessionID);
                 }
             );
@@ -127,7 +134,8 @@ namespace BackendProxy2ASR
                 //----------------------------------------------->
                 byte[] start = new byte[1];
                 start[0] = 0;
-                m_sessionID2wsWrap[sessionID].SendBytes(start);
+                SendBinaryData(sessionID, start);
+                //m_sessionID2wsWrap[sessionID].SendBytes(start);
 
                 _logger.Information("start pkt sent to start stream: sessionID = " + sessionID);
             }
@@ -149,7 +157,8 @@ namespace BackendProxy2ASR
                 //----------------------------------------------->
                 byte[] end = new byte[1];
                 end[0] = 1;
-                m_sessionID2wsWrap[sessionID].SendBytes(end);
+                SendBinaryData(sessionID, end);
+                //m_sessionID2wsWrap[sessionID].SendBytes(end);
 
                 _logger.Information("end pkt sent to end stream: sessionID = " + sessionID);
             }
@@ -171,11 +180,23 @@ namespace BackendProxy2ASR
                 //----------------------------------------------->
                 try
                 {
-                    m_sessionID2wsWrap[sessionID].SendBytes(data);
+                    var wsw = m_sessionID2wsWrap[sessionID];
+                    if (wsw.GetWebSocketState() != WebSocketState.Open)
+                    {
+                        _logger.Information("ASR state: " + wsw.GetWebSocketState().ToString());
+                        _logger.Error("ASR Websocket is not open.");
+                        ASRWsState = wsw.GetWebSocketState();
+                        wsw.Disconnect();
+                    }
+                    else
+                    {
+                        wsw.SendBytes(data);
+                    }
+                    
                 }
                 catch (Exception e)
                 {
-                    _logger.Error("Catch exception in sendbinarydata" + e.Message);
+                    _logger.Error("Catch exception in sendbinarydata: " + e.Message);
                 }
             }
             else

@@ -283,7 +283,17 @@ namespace BackendProxy2ASR
             }
 
             var sessionID = m_sock2sessionID[sock];
-            m_commASR.SendBinaryData(sessionID, data);
+            if (m_commASR.ASRWsState != System.Net.WebSockets.WebSocketState.Open)
+            {
+                string errorMessage = "ASR websocket is not open. Disconnect from client..";
+                _logger.Error(errorMessage);
+                sock.Send(errorMessage);
+                sock.Close();
+            }
+            else
+            {
+                m_commASR.SendBinaryData(sessionID, data);
+            }
 
             var session = m_sessionID2Helper[sessionID];
             var sequenceID = session.GetCurrentSequenceID();
