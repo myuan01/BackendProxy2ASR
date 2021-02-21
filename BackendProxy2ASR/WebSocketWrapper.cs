@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace BackendProxy2ASR
 {
-    class WebSocketWrapper
+    public class WebSocketWrapper
     {
         private const int ReceiveChunkSize = 4096;
         private const int SendChunkSize = 4096;
