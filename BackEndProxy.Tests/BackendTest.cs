@@ -20,10 +20,10 @@ namespace BackEndProxy.Tests
 
         public BackEndProxyFixture()
         {
-            // TODO: run backend server in a task or backend server
+            // TODO: run backend server in a new task or process
 
             string solnPath = Environment.GetEnvironmentVariable("SLN_PATH");
-            string configRelativePath = "./config.json";
+            string configRelativePath = "./BackEndProxy.Tests/test_config.json";
             string configAbsPath = Path.Combine(solnPath, configRelativePath);
 
             this.config = new ConfigurationBuilder()
@@ -60,9 +60,10 @@ namespace BackEndProxy.Tests
             NpgsqlDataReader playbackReader = this.fixture.databaseHelper.GetPlayback();
 
             var proxyPort = Int32.Parse(this.fixture.config.GetSection("Proxy")["proxyPort"]);
+            var proxyHost = this.fixture.config.GetSection("Proxy")["proxyHost"];
 
             // assumes there's a proxy server running locally
-            string url = "ws://" + "localhost" + ":" + proxyPort;
+            string url = $"ws://{proxyHost}:{proxyPort}";
             bool endTest = false;
             string asrfullResult = "";
 
@@ -75,7 +76,7 @@ namespace BackEndProxy.Tests
                 wsw.Disconnect();
             });
 
-            wsw.OnMessage((msg, sock) =>
+            wsw.OnMessage(async (msg, sock) =>
                 {
                     Console.WriteLine(msg);
                     if (msg[0].ToString() == "0")
@@ -88,6 +89,11 @@ namespace BackEndProxy.Tests
                         string textinfo = "{right_text:" + rnd.Next(1, 150).ToString() + ", session_id:\"" + session_id + "\", sequence_id:" + rnd.Next(1, 1000).ToString() + "}";
                         wsw.SendMessage(textinfo);
 
+                        if (!playbackReader.HasRows)
+                        {
+                            throw new Exception("No playback message obtained");
+                        }
+
                         while (playbackReader.Read())
                         {
                             byte[] message = playbackReader.GetFieldValue<byte[]>(playbackReader.GetOrdinal("message"));
@@ -96,7 +102,7 @@ namespace BackEndProxy.Tests
 
                             if (delay > 0)
                             {
-                                Thread.Sleep(Convert.ToInt32(delay));
+                                await Task.Delay(Convert.ToInt32(delay));
                             }
                         }
                         playbackReader.Close();
