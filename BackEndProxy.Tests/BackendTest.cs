@@ -5,9 +5,9 @@ using Npgsql;
 using Xunit;
 using BackendProxy2ASR;
 using Microsoft.Extensions.Configuration;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 
 namespace BackEndProxy.Tests
@@ -58,6 +58,7 @@ namespace BackEndProxy.Tests
         public void Test()
         {
             NpgsqlDataReader playbackReader = this.fixture.databaseHelper.GetPlayback();
+            ILogger _logger = LogHelper.GetLogger<BackEndProxy_IntegrationTesting>();
 
             var proxyPort = Int32.Parse(this.fixture.config.GetSection("Proxy")["proxyPort"]);
             var proxyHost = this.fixture.config.GetSection("Proxy")["proxyHost"];
@@ -78,7 +79,7 @@ namespace BackEndProxy.Tests
 
             wsw.OnMessage(async (msg, sock) =>
                 {
-                    Console.WriteLine(msg);
+                    _logger.Information(msg);
                     if (msg[0].ToString() == "0")
                     {
                         var substring = msg.Substring(1);
@@ -96,7 +97,7 @@ namespace BackEndProxy.Tests
 
                         while (playbackReader.Read())
                         {
-                            int repeats = 15;
+                            int repeats = 5;
                             for (int i = 0; i < repeats; i++)
                             {
                                 byte[] message = playbackReader.GetFieldValue<byte[]>(playbackReader.GetOrdinal("message"));
