@@ -102,7 +102,15 @@ namespace BackendProxy2ASR
                 }
             );
 
-            wsw.Connect();
+            try
+            {
+                wsw.Connect();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error("Unable to connect to ASR Engine: " + ex.Message);
+            }
+            
         }
 
         //----------------------------------------------------------------------------------------->

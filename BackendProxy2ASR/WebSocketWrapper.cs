@@ -229,9 +229,28 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         private async void ConnectAsync()
         {
-            await _ws.ConnectAsync(_uri, _cancellationToken);
-            CallOnConnected();
-            StartListen();
+            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(FatalExceptionHandler);
+            try
+            {
+                await _ws.ConnectAsync(_uri, _cancellationToken);
+                CallOnConnected();
+                StartListen();
+            }
+            catch(WebSocketException WebEx)
+            {
+                _logger.Error(WebEx, "In ConnectAsync: " + WebEx.Message);
+                _ws.Dispose();
+            }
+            catch (OperationCanceledException OpEx)
+            {
+                _logger.Error(OpEx, "In ConnectAsync: " + OpEx.Message);
+                _ws.Dispose();
+            }
+            catch (Exception Ex)
+            {
+                _logger.Error(Ex, "In ConnectAsync: " + Ex.Message);
+                _ws.Dispose();
+            }
         }
 
         private async void StartListen()

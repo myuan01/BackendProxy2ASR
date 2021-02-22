@@ -217,8 +217,18 @@ namespace BackendProxy2ASR
 
             if (session.IsConnectedToASR == false)
             {
-                m_commASR.ConnectASR(aps.session_id);
-                session.IsConnectedToASR = true;
+                try
+                {
+                    m_commASR.ConnectASR(aps.session_id);
+                    session.IsConnectedToASR = true;
+                }
+                catch (WebSocketException ex)
+                {
+                    string errorMessage = "Unable to connect to ASR engine. Exception found: " + ex.Message;
+                    _logger.Error(errorMessage);
+                    sock.Send(errorMessage);
+                    sock.Close();
+                }
             }
 
             //----------------------------------------------------------------->
@@ -338,7 +348,7 @@ namespace BackendProxy2ASR
                 await Task.Delay(TimeSpan.FromMilliseconds(_pingInterval));
             }
 
-            _logger.Error("Socket is not available.");
+            _logger.Error("Unable to receive pong from client. Disconnect from client...");
             sock.OnClose();
 
         }
