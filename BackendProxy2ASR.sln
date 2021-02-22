@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Fleck", "Fleck\Fleck.csproj
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "database_and_log", "database_and_log\database_and_log.csproj", "{132DA16D-5385-4FE9-AD05-D4F0C131AE78}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BackEndProxy.Tests", "BackEndProxy.Tests\BackEndProxy.Tests.csproj", "{299421F9-E21E-40F6-9987-FD02C339DC07}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,14 @@ Global
 		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Release|Any CPU.Build.0 = Release|Any CPU
 		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Release|x64.ActiveCfg = Release|Any CPU
 		{132DA16D-5385-4FE9-AD05-D4F0C131AE78}.Release|x64.Build.0 = Release|Any CPU
+		{299421F9-E21E-40F6-9987-FD02C339DC07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{299421F9-E21E-40F6-9987-FD02C339DC07}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{299421F9-E21E-40F6-9987-FD02C339DC07}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{299421F9-E21E-40F6-9987-FD02C339DC07}.Debug|x64.Build.0 = Debug|Any CPU
+		{299421F9-E21E-40F6-9987-FD02C339DC07}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{299421F9-E21E-40F6-9987-FD02C339DC07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{299421F9-E21E-40F6-9987-FD02C339DC07}.Release|x64.ActiveCfg = Release|Any CPU
+		{299421F9-E21E-40F6-9987-FD02C339DC07}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

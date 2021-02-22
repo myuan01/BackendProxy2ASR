@@ -311,5 +311,17 @@ namespace database_and_log
                 return false;
             }
         }
+
+        public NpgsqlDataReader GetPlayback()
+        {
+            string sqlStatement = @"SELECT * from public.get_playback()";
+
+            using var cmd = new NpgsqlCommand(sqlStatement, _conn);
+
+            // Execute the query and obtain a result set
+            NpgsqlDataReader dr = cmd.ExecuteReader();
+
+            return dr;
+        }
     }
 }
