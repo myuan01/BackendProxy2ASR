@@ -96,13 +96,17 @@ namespace BackEndProxy.Tests
 
                         while (playbackReader.Read())
                         {
-                            byte[] message = playbackReader.GetFieldValue<byte[]>(playbackReader.GetOrdinal("message"));
-                            wsw.SendBytes(message);
-                            Double delay = playbackReader.GetFieldValue<Double>(playbackReader.GetOrdinal("delay"));
-
-                            if (delay > 0)
+                            int repeats = 15;
+                            for (int i = 0; i < repeats; i++)
                             {
-                                await Task.Delay(Convert.ToInt32(delay));
+                                byte[] message = playbackReader.GetFieldValue<byte[]>(playbackReader.GetOrdinal("message"));
+                                wsw.SendBytes(message);
+                                Double delay = playbackReader.GetFieldValue<Double>(playbackReader.GetOrdinal("delay"));
+
+                                if (delay > 0)
+                                {
+                                    await Task.Delay(Convert.ToInt32(delay));
+                                }
                             }
                         }
                         playbackReader.Close();
