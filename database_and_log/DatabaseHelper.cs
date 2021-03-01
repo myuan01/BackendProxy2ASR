@@ -13,12 +13,14 @@ namespace database_and_log
     {
         private NpgsqlConnection? _conn;
         private ILogger _logger = LogHelper.GetLogger<DatabaseHelper>();
+        private readonly bool _toStoreAudio = false;
 
         public DatabaseHelper(IConfiguration config)
         {
             // read config from configFilePath and parse into connection string
             // connectionString = "Host=localhost;Username=postgres;Password=password;Database=ai_3_staging";
             bool toConnect = ConfigurationBinder.GetValue<bool>(config.GetSection("Database"), "ToConnect");
+            _toStoreAudio = ConfigurationBinder.GetValue<bool>(config.GetSection("Database"), "StoreAudio");
 
             if (toConnect)
             {
@@ -314,7 +316,7 @@ namespace database_and_log
 
         public int insert_playback(byte[] message, string session_id)
         {
-            if (_conn != null)
+            if (_conn != null && _toStoreAudio)
             {
                 string sqlStatement = @"CALL public.insert_playback(@message, @session_id)";
 
