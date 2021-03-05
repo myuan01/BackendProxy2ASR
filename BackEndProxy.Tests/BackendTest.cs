@@ -3,6 +3,7 @@ using database_and_log;
 using System.IO;
 using Npgsql;
 using Xunit;
+using Xunit.Abstractions;
 using BackendProxy2ASR;
 using Microsoft.Extensions.Configuration;
 using System.Threading;
@@ -49,9 +50,11 @@ namespace BackEndProxy.Tests
     public class BackEndProxy_IntegrationTesting : IClassFixture<BackEndProxyFixture>
     {
         BackEndProxyFixture fixture;
-        public BackEndProxy_IntegrationTesting(BackEndProxyFixture fixture)
+        private readonly ITestOutputHelper output;
+        public BackEndProxy_IntegrationTesting(BackEndProxyFixture fixture, ITestOutputHelper output)
         {
             this.fixture = fixture;
+            this.output = output;
         }
 
         [Fact]
@@ -146,7 +149,7 @@ namespace BackEndProxy.Tests
 
             wsw.OnMessage(async (msg, sock) =>
                 {
-                    Console.WriteLine(msg);
+                    output.WriteLine(msg);
                     if (msg[0].ToString() == "0")
                     {
                         var substring = msg.Substring(1);
@@ -157,6 +160,9 @@ namespace BackEndProxy.Tests
                         string textinfo = "{right_text:" + rnd.Next(1, 150).ToString() + ", session_id:\"" + session_id + "\", sequence_id:" + rnd.Next(1, 1000).ToString() + "}";
                         wsw.SendMessage(textinfo);
 
+                        // some time is needed for proxy server to connect to ASR engine
+                        await Task.Delay(1000);
+
                         if (!playbackReader.HasRows)
                         {
                             throw new Exception("No playback message obtained");
@@ -166,10 +172,10 @@ namespace BackEndProxy.Tests
                         {
                             byte[] message = playbackReader.GetFieldValue<byte[]>(playbackReader.GetOrdinal("message"));
                             wsw.SendBytes(message);
-                            await Task.Delay(100);
+                            await Task.Delay(50);
                         }
                         playbackReader.Close();
-                        await Task.Delay(5000);
+                        await Task.Delay(500);
                     }
                 }
             );
@@ -177,5 +183,6 @@ namespace BackEndProxy.Tests
             task.Start();
             while (!task.IsCompleted) { }
         }
+
     }
 }
