@@ -60,7 +60,7 @@ namespace BackEndProxy.Tests
         [Fact]
         public void SimpleTest()
         {
-            NpgsqlDataReader playbackReader = this.fixture.databaseHelper.GetPlayback();
+            NpgsqlDataReader playbackReader = this.fixture.databaseHelper.GetPlayback("simple_playback");
 
             var proxyPort = Int32.Parse(this.fixture.config.GetSection("Proxy")["proxyPort"]);
             var proxyHost = this.fixture.config.GetSection("Proxy")["proxyHost"];
@@ -81,7 +81,7 @@ namespace BackEndProxy.Tests
 
             wsw.OnMessage(async (msg, sock) =>
                 {
-                    Console.WriteLine(msg);
+                    this.output.WriteLine(msg);
                     if (msg[0].ToString() == "0")
                     {
                         var substring = msg.Substring(1);
@@ -91,6 +91,9 @@ namespace BackEndProxy.Tests
                         Random rnd = new Random();
                         string textinfo = "{right_text:" + rnd.Next(1, 150).ToString() + ", session_id:\"" + session_id + "\", sequence_id:" + rnd.Next(1, 1000).ToString() + "}";
                         wsw.SendMessage(textinfo);
+
+                        // some time is needed for proxy server to connect to ASR engine
+                        await Task.Delay(1000);
 
                         if (!playbackReader.HasRows)
                         {
@@ -149,7 +152,7 @@ namespace BackEndProxy.Tests
 
             wsw.OnMessage(async (msg, sock) =>
                 {
-                    output.WriteLine(msg);
+                    this.output.WriteLine(msg);
                     if (msg[0].ToString() == "0")
                     {
                         var substring = msg.Substring(1);

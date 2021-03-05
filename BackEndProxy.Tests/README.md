@@ -10,6 +10,9 @@
 ## Run tests
 
 ```bash
-$ # from the solution directory
+$ # run all tests
 $ dotnet test -s BackEndProxy.Tests/.runsettings
+
+$ # filter and run tests
+$ dotnet test -s BackEndProxy.Tests/.runsettings --filter simple
 ```
