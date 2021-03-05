@@ -3,6 +3,7 @@ using database_and_log;
 using System.IO;
 using Npgsql;
 using Xunit;
+using Xunit.Abstractions;
 using BackendProxy2ASR;
 using Microsoft.Extensions.Configuration;
 using System.Threading;
@@ -49,15 +50,17 @@ namespace BackEndProxy.Tests
     public class BackEndProxy_IntegrationTesting : IClassFixture<BackEndProxyFixture>
     {
         BackEndProxyFixture fixture;
-        public BackEndProxy_IntegrationTesting(BackEndProxyFixture fixture)
+        private readonly ITestOutputHelper output;
+        public BackEndProxy_IntegrationTesting(BackEndProxyFixture fixture, ITestOutputHelper output)
         {
             this.fixture = fixture;
+            this.output = output;
         }
 
         [Fact]
-        public void Test()
+        public void SimpleTest()
         {
-            NpgsqlDataReader playbackReader = this.fixture.databaseHelper.GetPlayback();
+            NpgsqlDataReader playbackReader = this.fixture.databaseHelper.GetPlayback("simple_playback");
 
             var proxyPort = Int32.Parse(this.fixture.config.GetSection("Proxy")["proxyPort"]);
             var proxyHost = this.fixture.config.GetSection("Proxy")["proxyHost"];
@@ -78,7 +81,7 @@ namespace BackEndProxy.Tests
 
             wsw.OnMessage(async (msg, sock) =>
                 {
-                    Console.WriteLine(msg);
+                    this.output.WriteLine(msg);
                     if (msg[0].ToString() == "0")
                     {
                         var substring = msg.Substring(1);
@@ -88,6 +91,9 @@ namespace BackEndProxy.Tests
                         Random rnd = new Random();
                         string textinfo = "{right_text:" + rnd.Next(1, 150).ToString() + ", session_id:\"" + session_id + "\", sequence_id:" + rnd.Next(1, 1000).ToString() + "}";
                         wsw.SendMessage(textinfo);
+
+                        // some time is needed for proxy server to connect to ASR engine
+                        await Task.Delay(1000);
 
                         if (!playbackReader.HasRows)
                         {
@@ -124,5 +130,62 @@ namespace BackEndProxy.Tests
 
             Assert.True(asrfullResult == "新年快乐 ", $"{asrfullResult} does not match '新年快乐 '");
         }
+
+        [Fact]
+        public void MockGameSessionTest()
+        {
+            NpgsqlDataReader playbackReader = this.fixture.databaseHelper.GetPlayback("cb0bd39c-9482-4e71-b81a-cdf334c5c883");
+
+            var proxyPort = Int32.Parse(this.fixture.config.GetSection("Proxy")["proxyPort"]);
+            var proxyHost = this.fixture.config.GetSection("Proxy")["proxyHost"];
+
+            // assumes there's a proxy server running locally
+            string url = $"ws://{proxyHost}:{proxyPort}";
+            WebSocketWrapper wsw = WebSocketWrapper.Create(url);
+
+            Task task = new Task(() =>
+            {
+                wsw.Connect();
+                while (!playbackReader.IsClosed) { }
+                wsw.Disconnect();
+            });
+
+            wsw.OnMessage(async (msg, sock) =>
+                {
+                    this.output.WriteLine(msg);
+                    if (msg[0].ToString() == "0")
+                    {
+                        var substring = msg.Substring(1);
+                        string session_id = JObject.Parse(substring).Value<string>("session_id");
+
+                        //send session information as text message
+                        Random rnd = new Random();
+                        string textinfo = "{right_text:" + rnd.Next(1, 150).ToString() + ", session_id:\"" + session_id + "\", sequence_id:" + rnd.Next(1, 1000).ToString() + "}";
+                        wsw.SendMessage(textinfo);
+
+                        // some time is needed for proxy server to connect to ASR engine
+                        await Task.Delay(1000);
+
+                        if (!playbackReader.HasRows)
+                        {
+                            throw new Exception("No playback message obtained");
+                        }
+
+                        while (playbackReader.Read())
+                        {
+                            byte[] message = playbackReader.GetFieldValue<byte[]>(playbackReader.GetOrdinal("message"));
+                            wsw.SendBytes(message);
+                            await Task.Delay(50);
+                        }
+                        playbackReader.Close();
+                        await Task.Delay(500);
+                    }
+                }
+            );
+
+            task.Start();
+            while (!task.IsCompleted) { }
+        }
+
     }
 }

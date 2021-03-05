@@ -302,6 +302,7 @@ namespace BackendProxy2ASR
             }
             else
             {
+                m_databaseHelper.insert_playback(data, sessionID);
                 m_commASR.SendBinaryData(sessionID, data);
             }
 

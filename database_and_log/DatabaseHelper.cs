@@ -13,12 +13,14 @@ namespace database_and_log
     {
         private NpgsqlConnection? _conn;
         private ILogger _logger = LogHelper.GetLogger<DatabaseHelper>();
+        private readonly bool _toStoreAudio = false;
 
         public DatabaseHelper(IConfiguration config)
         {
             // read config from configFilePath and parse into connection string
             // connectionString = "Host=localhost;Username=postgres;Password=password;Database=ai_3_staging";
             bool toConnect = ConfigurationBinder.GetValue<bool>(config.GetSection("Database"), "ToConnect");
+            _toStoreAudio = ConfigurationBinder.GetValue<bool>(config.GetSection("Database"), "StoreAudio");
 
             if (toConnect)
             {
@@ -310,6 +312,65 @@ namespace database_and_log
                 _logger.Error(e, e.Message);
                 return false;
             }
+        }
+
+        public int insert_playback(byte[] message, string session_id)
+        {
+            if (_conn != null && _toStoreAudio)
+            {
+                string sqlStatement = @"CALL public.insert_playback(@message, @session_id)";
+
+                using var cmd = new NpgsqlCommand(sqlStatement, _conn);
+                cmd.Parameters.AddWithValue("session_id", session_id);
+                cmd.Parameters.AddWithValue("message", message);
+
+                try
+                {
+                    _logger.Information($"Insert playback for session {session_id}.");
+                    return Convert.ToInt32(cmd.ExecuteScalar());
+                }
+                catch (Exception e)
+                {
+                    _logger.Error(e, e.Message);
+                    return -1;
+                }
+            }
+
+            return -1;
+        }
+
+        public bool update_playback(int playback_id, double delay)
+        {
+            string sqlStatement = @"CALL public.update_playback(@playback_id, @delay)";
+
+            using var cmd = new NpgsqlCommand(sqlStatement, _conn);
+            cmd.Parameters.AddWithValue("playback_id", playback_id);
+            cmd.Parameters.AddWithValue("delay", delay);
+
+            try
+            {
+                cmd.ExecuteNonQuery();
+                _logger.Information($"Updating playback for playback_id {playback_id}.");
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.Error(e, e.Message);
+                return false;
+            }
+        }
+
+        public NpgsqlDataReader GetPlayback(string session_id)
+        {
+            string sqlStatement = @"SELECT * from public.get_playback(@session_id)";
+
+            using var cmd = new NpgsqlCommand(sqlStatement, _conn);
+            cmd.Parameters.AddWithValue("session_id", session_id);
+
+            // Execute the query and obtain a result set
+            NpgsqlDataReader dr = cmd.ExecuteReader();
+
+            return dr;
         }
 
         public NpgsqlDataReader GetPlayback()
