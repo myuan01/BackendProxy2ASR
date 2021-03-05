@@ -78,7 +78,7 @@ namespace BackendProxy2ASR
         {
             get { return m_allSockets; }
         }
-
+        
 
         public void Start()
         {
@@ -158,6 +158,24 @@ namespace BackendProxy2ASR
                     _logger.Information("map sessionID " + session.m_sessionID + " -> sock");
 
                     Task.Run(() => StartPing(sock));
+
+                    // connect to asr engine
+                    if (session.IsConnectedToASR == false)
+                    {
+                        try
+                        {
+                            m_commASR.ConnectASR(session.m_sessionID);
+                            session.IsConnectedToASR = true;
+                            _logger.Information("Successfully connected to ASR Engine for session: " + session.m_sessionID);
+                        }
+                        catch (WebSocketException ex)
+                        {
+                            string ASRerrorMessage = "Unable to connect to ASR engine. Exception found: " + ex.Message;
+                            _logger.Error(ASRerrorMessage);
+                            sock.Send(ASRerrorMessage);
+                            sock.Close();
+                        }
+                    }
                     return;
                 }
             }

@@ -68,6 +68,7 @@ namespace BackendProxy2ASR
         public void ConnectASR(String sessionID)
         {
             var uri = "wss://" + m_asrIP + ":" + m_asrPort + "/ws/streamraw/" + m_sampleRate;
+            //var uri = "ws://" + m_asrIP + ":" + m_asrPort;
 
             _logger.Information("entered CommASR::ConnectASR(" + sessionID + "): uri = " + uri);
 
@@ -86,6 +87,7 @@ namespace BackendProxy2ASR
             wsw.OnMessage((msg, sock) =>
                 {
                     _logger.Information("EngineASR -> CommASR: " + msg + "  [sessionID = " + sessionID + ", sessionID = " + m_wsWrap2sessionID[sock] + "]");
+                    if (msg.Length == 0) return;
                     var ProxySocket = m_sessionID2sock[sessionID];
                     ProxySocket.Send(msg);
                     InsertPredictionToDB(msg, sessionID);
