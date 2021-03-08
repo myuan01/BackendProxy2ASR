@@ -1,8 +1,8 @@
 ﻿using System;
-using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using System.Threading;
 using Fleck;
 using Newtonsoft.Json;
 using Microsoft.Extensions.Configuration;
@@ -37,6 +37,7 @@ namespace BackendProxy2ASR
         private List<IWebSocketConnection> m_allSockets;
         private Dictionary<String, IWebSocketConnection> m_sessionID2sock;
         private Dictionary<IWebSocketConnection, String> m_sock2sessionID;
+        private Dictionary<String, CancellationTokenSource> m_sessonId2PingCancellationTokenSource;
 
         private CommASR m_commASR = null;
 
@@ -68,6 +69,7 @@ namespace BackendProxy2ASR
             m_sessionID2sock = new Dictionary<String, IWebSocketConnection>();
             m_sock2sessionID = new Dictionary<IWebSocketConnection, String>();
             m_sessionID2Helper = new Dictionary<String, SessionHelper>();
+            m_sessonId2PingCancellationTokenSource = new Dictionary<String, CancellationTokenSource>();
             m_databaseHelper = databaseHelper;
 
             m_commASR = CommASR.Create(m_asrIP, m_asrPort, m_sampleRate, m_sessionID2sock, m_sessionID2Helper, databaseHelper);
@@ -157,7 +159,10 @@ namespace BackendProxy2ASR
                     _logger.Information("map sock -> sessionID: " + session.m_sessionID);
                     _logger.Information("map sessionID " + session.m_sessionID + " -> sock");
 
-                    Task.Run(() => StartPing(sock));
+                    // start ping to client
+                    CancellationTokenSource tokenSource = new CancellationTokenSource();
+                    m_sessonId2PingCancellationTokenSource[session.m_sessionID] = tokenSource;
+                    Task.Run(() => StartPing(sock, tokenSource.Token), tokenSource.Token);
 
                     // connect to asr engine
                     if (session.IsConnectedToASR == false)
@@ -195,18 +200,21 @@ namespace BackendProxy2ASR
         //--------------------------------------------------------------------->
         private void OnDisconnect(IWebSocketConnection sock)
         {
-            _logger.Information("WS Disconnect...");
             // Disconnect from ASR engine
-            if (m_sock2sessionID.ContainsKey(sock) == true)
+            if (m_sock2sessionID.ContainsKey(sock))
             {
                 var session_id = m_sock2sessionID[sock];
-                m_commASR.DisconnectASR(session_id);
+                _logger.Information($"Disconnecting WS for SessionID = {session_id}");
 
+                m_sessonId2PingCancellationTokenSource[session_id].Cancel();
+                m_sessonId2PingCancellationTokenSource.Remove(session_id);
+
+                m_commASR.DisconnectASR(session_id);
                 m_sessionID2Helper.Remove(session_id);
                 m_sessionID2sock.Remove(session_id);
+                m_sock2sessionID.Remove(sock);
+                m_allSockets.Remove(sock);
             }
-            m_sock2sessionID.Remove(sock);
-            m_allSockets.Remove(sock);
         }
 
         //--------------------------------------------------------------------->
@@ -302,7 +310,7 @@ namespace BackendProxy2ASR
         //--------------------------------------------------------------------->
         // Handle websocket text message
         //--------------------------------------------------------------------->
-        private void OnBinaryData(IWebSocketConnection sock, byte[] data)
+        private async void OnBinaryData(IWebSocketConnection sock, byte[] data)
         {
             if (!m_allSockets.Contains(sock))
             {
@@ -311,17 +319,18 @@ namespace BackendProxy2ASR
             }
 
             var sessionID = m_sock2sessionID[sock];
-            if (m_commASR.ASRWsState != System.Net.WebSockets.WebSocketState.Open)
+
+            try
+            {
+                await m_commASR.SendBinaryData(sessionID, data);
+                m_databaseHelper.insert_playback(data, sessionID);
+            }
+            catch (Exception)
             {
                 string errorMessage = "ASR websocket is not open. Disconnect from client..";
                 _logger.Error(errorMessage);
-                sock.Send(errorMessage);
+                await sock.Send(errorMessage);
                 sock.Close();
-            }
-            else
-            {
-                m_databaseHelper.insert_playback(data, sessionID);
-                m_commASR.SendBinaryData(sessionID, data);
             }
 
             var session = m_sessionID2Helper[sessionID];
@@ -357,20 +366,35 @@ namespace BackendProxy2ASR
             return false;
         }
 
-        private async Task StartPing(IWebSocketConnection sock)
+        private async Task StartPing(IWebSocketConnection sock, CancellationToken token)
         {
+            var session_id = m_sock2sessionID[sock];
+
+            if (token.IsCancellationRequested)
+            {
+                return;
+            }
 
             while (sock.IsAvailable)
             {
-                _logger.Information("Send ping...");
+                if (token.IsCancellationRequested)
+                {
+                    _logger.Information($"Stopping task pinging for SessionID = {session_id}");
+                    return;
+                }
+                _logger.Information($"Sending ping for SessionID = {session_id}");
                 await Task.Run(() => sock.SendPing(_pingMessage));
                 await Task.Delay(TimeSpan.FromMilliseconds(_pingInterval));
             }
 
-            _logger.Error("Unable to receive pong from client. Disconnect from client...");
-            sock.OnClose();
+            if (token.IsCancellationRequested)
+            {
+                _logger.Information($"Stopping task sending ping for SessionID = {session_id}");
+                return;
+            }
 
+            _logger.Error($"Unable to receive pong from client for SessionID = {session_id}. Disconnecting from client...");
+            sock.Close();
         }
     }
-
 }

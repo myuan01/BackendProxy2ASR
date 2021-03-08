@@ -72,15 +72,11 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         // Disconnects from WebSocket server.
         //----------------------------------------------------------------------------------------->
-        public WebSocketWrapper Disconnect()
+        public async Task Disconnect()
         {
-            //if ((_ws.State == WebSocketState.Open))
-            //{
-                CallOnDisconnected();
-                _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, _cancellationToken);
-                //CallOnDisconnected();
-            //}
-            return this;
+            CallOnDisconnected();
+            await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, _cancellationToken);
+            _ws.Dispose();
         }
 
         //----------------------------------------------------------------------------------------->

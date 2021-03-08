@@ -72,11 +72,11 @@ namespace BackEndProxy.Tests
 
             WebSocketWrapper wsw = WebSocketWrapper.Create(url);
 
-            Task task = new Task(() =>
+            Task task = new Task(async () =>
             {
                 wsw.Connect();
                 while (!endTest || !playbackReader.IsClosed) { }
-                wsw.Disconnect();
+                await wsw.Disconnect();
             });
 
             wsw.OnMessage(async (msg, sock) =>
@@ -143,11 +143,11 @@ namespace BackEndProxy.Tests
             string url = $"ws://{proxyHost}:{proxyPort}";
             WebSocketWrapper wsw = WebSocketWrapper.Create(url);
 
-            Task task = new Task(() =>
+            Task task = new Task(async () =>
             {
                 wsw.Connect();
                 while (!playbackReader.IsClosed) { }
-                wsw.Disconnect();
+                await wsw.Disconnect();
             });
 
             wsw.OnMessage(async (msg, sock) =>
