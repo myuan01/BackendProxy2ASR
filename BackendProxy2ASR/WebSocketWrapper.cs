@@ -76,7 +76,6 @@ namespace BackendProxy2ASR
         {
             CallOnDisconnected();
             await _ws.CloseAsync(WebSocketCloseStatus.NormalClosure, string.Empty, _cancellationToken);
-            _ws.Dispose();
         }
 
         //----------------------------------------------------------------------------------------->
@@ -93,11 +92,11 @@ namespace BackendProxy2ASR
         // send binary data to WebSocket server
         //      public interface
         //----------------------------------------------------------------------------------------->
-        public void SendBytes(byte[] bytes)
+        public async Task SendBytes(byte[] bytes)
         {
             try
             {
-                SendBytesAsync(bytes);
+                await SendBytesAsync(bytes);
             }
             catch (Exception e)
             {
@@ -169,7 +168,7 @@ namespace BackendProxy2ASR
         // send binary data to WebSocket server
         //      the actual implementation for the public interface
         //----------------------------------------------------------------------------------------->
-        private async void SendBytesAsync(byte[] bytes)
+        private async Task SendBytesAsync(byte[] bytes)
         {
             AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler(FatalExceptionHandler);
             try

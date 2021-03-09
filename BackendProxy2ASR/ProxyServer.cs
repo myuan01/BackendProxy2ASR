@@ -97,9 +97,9 @@ namespace BackendProxy2ASR
                         OnConnect(socket);
                     };
 
-                    socket.OnClose = () =>
+                    socket.OnClose = async () =>
                     {
-                        OnDisconnect(socket);
+                        await OnDisconnect(socket);
                     };
 
                     socket.OnMessage = message =>
@@ -198,7 +198,7 @@ namespace BackendProxy2ASR
         //--------------------------------------------------------------------->
         // Handle websocket disconnect
         //--------------------------------------------------------------------->
-        private void OnDisconnect(IWebSocketConnection sock)
+        private async Task OnDisconnect(IWebSocketConnection sock)
         {
             // Disconnect from ASR engine
             if (m_sock2sessionID.ContainsKey(sock))
@@ -209,7 +209,7 @@ namespace BackendProxy2ASR
                 m_sessonId2PingCancellationTokenSource[session_id].Cancel();
                 m_sessonId2PingCancellationTokenSource.Remove(session_id);
 
-                m_commASR.DisconnectASR(session_id);
+                await m_commASR.DisconnectASR(session_id);
                 m_sessionID2Helper.Remove(session_id);
                 m_sessionID2sock.Remove(session_id);
                 m_sock2sessionID.Remove(sock);

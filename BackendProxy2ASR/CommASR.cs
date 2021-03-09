@@ -114,7 +114,7 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         // disconnect from ASR when client disconnect
         //----------------------------------------------------------------------------------------->
-        public async void DisconnectASR(String sessionID)
+        public async Task DisconnectASR(String sessionID)
         {
             if (m_sessionID2wsWrap.ContainsKey(sessionID))
             {
@@ -195,7 +195,7 @@ namespace BackendProxy2ASR
                     }
                     else
                     {
-                        wsw.SendBytes(data);
+                        await wsw.SendBytes(data);
                     }
                     
                 }
