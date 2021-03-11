@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
-using System.Text;
+using System.Threading;
 
 using Fleck;
 using database_and_log;
@@ -17,33 +17,47 @@ namespace BackendProxy2ASR
         private readonly String m_asrIP;
         private readonly int m_asrPort;
         private readonly int m_sampleRate;
+        private readonly int m_maxConnection;
+
+        private readonly bool m_usingDummy;
+        private readonly string m_dummyAsr;
+        private readonly int m_dummyPort;
+
         private Dictionary<String, IWebSocketConnection> m_sessionID2sock;  //sessionID -> client websocket
         private Dictionary<String, SessionHelper> m_sessionID2helper;  //sessionID -> session helper
 
-        private Dictionary<String, WebSocketWrapper> m_sessionID2wsWrap;
-        private Dictionary<WebSocketWrapper, String> m_wsWrap2sessionID;
-
+        private Dictionary<int, WebSocketWrapper> m_wsWrapPoolDictionary;
+        private Dictionary<int, WebSocketState> m_wsWrapState;
+        private Dictionary<String, int> m_sessionID2wsPoolIndex;
+        private Queue<int> m_wsPoolQueue;
         private DatabaseHelper m_databaseHelper;
 
         private ILogger _logger = LogHelper.GetLogger<CommASR>();
 
-        public WebSocketState ASRWsState;
+        //public WebSocketState ASRWsState;
 
-        protected CommASR(String asrIP, int asrPort, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, 
-            Dictionary<String, SessionHelper> sessionID2helper, DatabaseHelper databaseHelper)
+        protected CommASR(IConfiguration config, DatabaseHelper databaseHelper, 
+            Dictionary<String, IWebSocketConnection> sessionID2sock, Dictionary<String, SessionHelper> sessionID2helper)
         {
-            m_asrIP = asrIP;
-            m_asrPort = asrPort;
-            m_sampleRate = sampleRate;
+            m_asrIP = config.GetSection("Proxy")["asrIP"];
+            m_asrPort = Int32.Parse(config.GetSection("Proxy")["asrPort"]);
+            m_sampleRate = Int32.Parse(config.GetSection("Proxy")["samplerate"]);
+            m_maxConnection = Int32.Parse(config.GetSection("Proxy")["maxConnection"]);
+
+            m_usingDummy = ConfigurationBinder.GetValue<bool>(config.GetSection("DummyServer"), "usingDummy", true);
+            m_dummyAsr = config.GetSection("DummyServer")["dummyAsrIP"];
+            m_dummyPort = Int32.Parse(config.GetSection("DummyServer")["dummyAsrPort"]);
+
             m_sessionID2sock = sessionID2sock;
             m_sessionID2helper = sessionID2helper;
             m_databaseHelper = databaseHelper;
 
-            m_sessionID2wsWrap = new Dictionary<String, WebSocketWrapper>();
-            m_wsWrap2sessionID = new Dictionary<WebSocketWrapper, String>();
+            m_wsWrapPoolDictionary = new Dictionary<int, WebSocketWrapper>();
+            m_wsWrapState = new Dictionary<int, WebSocketState>();
+            m_sessionID2wsPoolIndex = new Dictionary<String, int>();
+            m_wsPoolQueue = new Queue<int>();
 
-            ASRWsState = WebSocketState.None;
-
+            CreateASRConnectionPooling();
         }
 
         //----------------------------------------------------------------------------------------->
@@ -56,52 +70,57 @@ namespace BackendProxy2ASR
             public string result { get; set; }
         }
 
-        //----------------------------------------------------------------------------------------->
-        // Creates a new instance
-        //----------------------------------------------------------------------------------------->
-        public static CommASR Create(String ip, int port, int sampleRate, Dictionary<String, IWebSocketConnection> sessionID2sock, 
-            Dictionary<String, SessionHelper> sessionID2helper, DatabaseHelper databaseHelper)
-        {
-            return new CommASR(ip, port, sampleRate, sessionID2sock, sessionID2helper, databaseHelper);
-        }
-
-        public void ConnectASR(String sessionID)
+        /// <summary>
+        /// Create ASR socket pool and init queue for avaliable sockets
+        /// </summary>
+        private void CreateASRConnectionPooling()
         {
             var uri = "wss://" + m_asrIP + ":" + m_asrPort + "/ws/streamraw/" + m_sampleRate;
-            //var uri = "ws://" + m_asrIP + ":" + m_asrPort;
+            if (m_usingDummy == true)
+            {
+                uri = "ws://" + m_dummyAsr + ":" + m_dummyPort;
+                _logger.Information(" Using dummy ASR Engine::ConnectASR.");
+            }
 
-            _logger.Information("entered CommASR::ConnectASR(" + sessionID + "): uri = " + uri);
-
+            for (int i = 1; i < m_maxConnection + 1; i ++)
+            {
+                m_wsWrapState[i] = WebSocketState.None;
+                var wsw = InitASRWebSocket(i, uri);
+                if (wsw != null)
+                {
+                    m_wsWrapPoolDictionary[i] = wsw;
+                    _logger.Information("InitASRWebSocket::ConnectASR(" + i + "): uri = " + uri);
+                    m_wsPoolQueue.Enqueue(i);
+                    _logger.Information("ASRWebSocket: " + i + " has been added into pooling queue");
+                }
+                else
+                {
+                    _logger.Error("Unable to create ASR websocket for index: " + i);
+                }
+                // avoid ASR engine process crash
+                Thread.Sleep(1000);
+            }
+        }
+        /// <summary>
+        /// Init websocket to ASR engine
+        /// </summary>
+        /// <param name="index"></param>
+        /// <param name="uri"></param>
+        /// <returns></returns>
+        private WebSocketWrapper InitASRWebSocket(int index, string uri)
+        {
             var wsw = WebSocketWrapper.Create(uri);
 
             wsw.OnConnect((sock) =>
-                {
-                    _logger.Information("Connected to ASR Engine: sessionID = " + sessionID);
-                    m_sessionID2wsWrap[sessionID] = sock;
-                    m_wsWrap2sessionID[sock] = sessionID;
-                    ASRWsState = WebSocketState.Open;
-                    SendStartStream(sessionID);
-                }
-            );
-
-            wsw.OnMessage((msg, sock) =>
-                {
-                    _logger.Information("EngineASR -> CommASR: " + msg + "  [sessionID = " + sessionID + ", sessionID = " + m_wsWrap2sessionID[sock] + "]");
-                    if (msg.Length == 0) return;
-                    var ProxySocket = m_sessionID2sock[sessionID];
-                    ProxySocket.Send(msg);
-                    InsertPredictionToDB(msg, sessionID);
-                }
+            {
+                m_wsWrapState[index] = WebSocketState.Open;
+            }
             );
 
             wsw.OnDisconnect((sock) =>
-                {
-                    SendEndStream(sessionID);
-                    m_sessionID2wsWrap.Remove(sessionID);
-                    m_wsWrap2sessionID.Remove(sock);
-                    ASRWsState = WebSocketState.Closed;
-                    _logger.Information("Disconnected from ASR Engine: sessionID = " + sessionID);
-                }
+            {
+                m_wsWrapState[index] = WebSocketState.Closed;
+            }
             );
 
             try
@@ -111,19 +130,78 @@ namespace BackendProxy2ASR
             catch (Exception ex)
             {
                 _logger.Error("Unable to connect to ASR Engine: " + ex.Message);
+                return null;
             }
-            
-        }
 
+            return wsw;
+        }
         //----------------------------------------------------------------------------------------->
-        // disconnect from ASR when client disconnect
+        // Creates a new instance
+        //----------------------------------------------------------------------------------------->
+        public static CommASR Create(IConfiguration config, DatabaseHelper databaseHelper, 
+            Dictionary<String, IWebSocketConnection> sessionID2sock, Dictionary<String, SessionHelper> sessionID2helper)
+        {
+            return new CommASR(config, databaseHelper, sessionID2sock, sessionID2helper);
+        }
+        /// <summary>
+        /// When a Proxy establish connection, CommASR assign one socket to it with refined on Message method
+        /// </summary>
+        /// <param name="sessionID"></param>
+        /// <returns></returns>
+        public int ConnectASR(String sessionID)
+        {
+            _logger.Information("Get ASR websocket from pooling queue...");
+            if (m_wsPoolQueue.Count != 0)
+            {
+                while (m_wsPoolQueue.Count != 0)
+                {
+                    var wsIndex = m_wsPoolQueue.Peek();
+                    if (m_wsWrapState[wsIndex] == WebSocketState.Open)
+                    {
+                        wsIndex = m_wsPoolQueue.Dequeue();
+                        m_sessionID2wsPoolIndex[sessionID] = wsIndex;
+
+                        var wsw = m_wsWrapPoolDictionary[wsIndex];
+                        var ProxySocket = m_sessionID2sock[sessionID];
+
+                        wsw.OnMessage((msg, sock) =>
+                            {
+                                _logger.Information("EngineASR -> CommASR: " + msg + "  [sessionID = " + sessionID);
+                                if (msg.Length == 0) return;
+                                ProxySocket.Send(msg);
+                                InsertPredictionToDB(msg, sessionID);
+                            }
+                        );
+
+                        SendStartStream(sessionID);
+                        return wsIndex;
+                    }
+                    else
+                    {
+                        m_wsPoolQueue.Dequeue();
+                    }
+                }
+
+                return 0;
+            }
+            else
+            {
+                _logger.Error("No socket is available now. Reject client connection..");
+                return 0;
+            }
+
+
+        }
+        //----------------------------------------------------------------------------------------->
+        // disconnect from ASR when client disconnect, put wsIndex back to queue
         //----------------------------------------------------------------------------------------->
         public void DisconnectASR(String sessionID)
         {
-            if (m_sessionID2wsWrap.ContainsKey(sessionID) == true)
+            if (m_sessionID2wsPoolIndex.ContainsKey(sessionID) == true)
             {
-                var wsw = m_sessionID2wsWrap[sessionID];
-                wsw.Disconnect();
+                var wsIndex = m_sessionID2wsPoolIndex[sessionID];
+                SendEndStream(sessionID);
+                m_wsPoolQueue.Enqueue(wsIndex);
                 _logger.Information("DisconnectASR: sessionID = " + sessionID);
             }
             else
@@ -137,7 +215,7 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         public void SendStartStream(String sessionID)
         {
-            if (m_sessionID2wsWrap.ContainsKey(sessionID) == true)
+            if (m_sessionID2wsPoolIndex.ContainsKey(sessionID) == true)
             {
                 //----------------------------------------------->
                 //send start packet -> 1-byte = 0;
@@ -160,7 +238,7 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         public void SendEndStream(String sessionID)
         {
-            if (m_sessionID2wsWrap.ContainsKey(sessionID) == true)
+            if (m_sessionID2wsPoolIndex.ContainsKey(sessionID) == true)
             {
                 //----------------------------------------------->
                 //send start packet -> 1-byte = 0;
@@ -183,19 +261,20 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         public void SendBinaryData(String sessionID, byte[] data)
         {
-            if (m_sessionID2wsWrap.ContainsKey(sessionID) == true)
+            if (m_sessionID2wsPoolIndex.ContainsKey(sessionID) == true)
             {
                 //----------------------------------------------->
                 //send actual voice stream
                 //----------------------------------------------->
                 try
                 {
-                    var wsw = m_sessionID2wsWrap[sessionID];
+                    var wsIndex = m_sessionID2wsPoolIndex[sessionID];
+                    var wsw = m_wsWrapPoolDictionary[wsIndex];
                     if (wsw.GetWebSocketState() != WebSocketState.Open)
                     {
                         _logger.Information("ASR state: " + wsw.GetWebSocketState().ToString());
                         _logger.Error("ASR Websocket is not open.");
-                        ASRWsState = wsw.GetWebSocketState();
+                        m_wsWrapState[wsIndex] = wsw.GetWebSocketState();
                         wsw.Disconnect();
                     }
                     else
