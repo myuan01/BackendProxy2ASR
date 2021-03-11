@@ -9,7 +9,7 @@ using Microsoft.Extensions.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
-
+using System.Collections.Generic;
 
 namespace BackEndProxy.Tests
 {
@@ -72,11 +72,11 @@ namespace BackEndProxy.Tests
 
             WebSocketWrapper wsw = WebSocketWrapper.Create(url);
 
-            Task task = new Task(() =>
+            Task task = new Task(async () =>
             {
                 wsw.Connect();
                 while (!endTest || !playbackReader.IsClosed) { }
-                wsw.Disconnect();
+                await wsw.Disconnect();
             });
 
             wsw.OnMessage(async (msg, sock) =>
@@ -103,7 +103,7 @@ namespace BackEndProxy.Tests
                         while (playbackReader.Read())
                         {
                             byte[] message = playbackReader.GetFieldValue<byte[]>(playbackReader.GetOrdinal("message"));
-                            wsw.SendBytes(message);
+                            await wsw.SendBytes(message);
                             Double delay = playbackReader.GetFieldValue<Double>(playbackReader.GetOrdinal("delay"));
 
                             if (delay > 0)
@@ -143,11 +143,14 @@ namespace BackEndProxy.Tests
             string url = $"ws://{proxyHost}:{proxyPort}";
             WebSocketWrapper wsw = WebSocketWrapper.Create(url);
 
-            Task task = new Task(() =>
+            string[] expectedResults = { "吉祥如意", "四海增辉", "睫毛", "六六大顺", "新年欢乐", "有志竟成", "飞黄腾达" };
+            List<string> response = new List<string>();
+
+            Task task = new Task(async () =>
             {
                 wsw.Connect();
                 while (!playbackReader.IsClosed) { }
-                wsw.Disconnect();
+                await wsw.Disconnect();
             });
 
             wsw.OnMessage(async (msg, sock) =>
@@ -174,18 +177,28 @@ namespace BackEndProxy.Tests
                         while (playbackReader.Read())
                         {
                             byte[] message = playbackReader.GetFieldValue<byte[]>(playbackReader.GetOrdinal("message"));
-                            wsw.SendBytes(message);
+                            await wsw.SendBytes(message);
                             await Task.Delay(50);
                         }
                         playbackReader.Close();
                         await Task.Delay(500);
+                    }
+                    else
+                    {
+                        string cmd = JObject.Parse(msg).Value<string>("cmd");
+                        if (cmd == "asrfull")
+                        {
+                            string asrfullResult = JObject.Parse(msg).Value<string>("result");
+                            response.Add(asrfullResult.Trim());
+                        }
                     }
                 }
             );
 
             task.Start();
             while (!task.IsCompleted) { }
-        }
 
+            Assert.Equal(expectedResults, response);
+        }
     }
 }
