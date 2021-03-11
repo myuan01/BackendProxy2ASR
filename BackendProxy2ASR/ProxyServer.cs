@@ -72,7 +72,7 @@ namespace BackendProxy2ASR
             m_sessonId2PingCancellationTokenSource = new Dictionary<String, CancellationTokenSource>();
             m_databaseHelper = databaseHelper;
 
-            m_commASR = CommASR.Create(m_asrIP, m_asrPort, m_sampleRate, m_sessionID2sock, m_sessionID2Helper, databaseHelper);
+            m_commASR = CommASR.Create(config, databaseHelper, m_sessionID2sock, m_sessionID2Helper);
         }
 
 
@@ -88,7 +88,6 @@ namespace BackendProxy2ASR
 
             var server = new WebSocketServer("ws://0.0.0.0:" + m_proxyPort);
             _logger.Information("Starting Fleck WebSocket Server...");
-            _logger.Information("Service_Port: " + m_proxyPort + "; ASR_Port: " + m_asrPort + ";  ASR_IP: " + m_asrIP + ";  Samplerate: " + m_sampleRate);
 
             server.Start(socket =>
                 {
@@ -169,9 +168,13 @@ namespace BackendProxy2ASR
                     {
                         try
                         {
-                            m_commASR.ConnectASR(session.m_sessionID);
+                            var wsIndex = m_commASR.ConnectASR(session.m_sessionID);
+                            if (wsIndex == 0)
+                            {
+                                throw new Exception("No avaliable ASR socket at the moment. Please try again later..");
+                            }
                             session.IsConnectedToASR = true;
-                            _logger.Information("Successfully connected to ASR Engine for session: " + session.m_sessionID);
+                            _logger.Information("Successfully connected to ASR Engine for session: " + session.m_sessionID + " with socket " + wsIndex);
                         }
                         catch (WebSocketException ex)
                         {
@@ -245,8 +248,13 @@ namespace BackendProxy2ASR
             {
                 try
                 {
-                    m_commASR.ConnectASR(aps.session_id);
+                    var wsIndex = m_commASR.ConnectASR(session.m_sessionID);
+                    if (wsIndex == 0)
+                    {
+                        throw new Exception("No avaliable ASR socket at the moment. Please try again later..");
+                    }
                     session.IsConnectedToASR = true;
+                    _logger.Information("Successfully connected to ASR Engine for session: " + session.m_sessionID + " with socket " + wsIndex);
                 }
                 catch (WebSocketException ex)
                 {
@@ -318,22 +326,25 @@ namespace BackendProxy2ASR
                 return;
             }
 
-            var sessionID = m_sock2sessionID[sock];
 
+            var session_id = m_sock2sessionID[sock];
+            //var wsIndex = m_sessionID2ASRSocket[session_id];
+            
             try
             {
-                await m_commASR.SendBinaryData(sessionID, data);
-                m_databaseHelper.insert_playback(data, sessionID);
+                //_logger.Information("Sending binary data for session " + session_id + "....");
+                await m_commASR.SendBinaryData(session_id, data);
+                m_databaseHelper.insert_playback(data, session_id);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                string errorMessage = "ASR websocket is not open. Disconnect from client..";
+                string errorMessage = "ASR websocket is not open. Disconnect from client: " + ex.Message;
                 _logger.Error(errorMessage);
                 await sock.Send(errorMessage);
                 sock.Close();
             }
 
-            var session = m_sessionID2Helper[sessionID];
+            var session = m_sessionID2Helper[session_id];
             var sequenceID = session.GetCurrentSequenceID();
             session.StoreIncommingBytes(sequenceID, data);
         }
