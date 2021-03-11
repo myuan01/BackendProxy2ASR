@@ -1,7 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Net.WebSockets;
 using System.Threading;
+using System.Text;
+using System.Threading.Tasks;
 
 using Fleck;
 using database_and_log;
@@ -33,9 +35,7 @@ namespace BackendProxy2ASR
         private DatabaseHelper m_databaseHelper;
 
         private ILogger _logger = LogHelper.GetLogger<CommASR>();
-
-        //public WebSocketState ASRWsState;
-
+      
         protected CommASR(IConfiguration config, DatabaseHelper databaseHelper, 
             Dictionary<String, IWebSocketConnection> sessionID2sock, Dictionary<String, SessionHelper> sessionID2helper)
         {
@@ -58,6 +58,7 @@ namespace BackendProxy2ASR
             m_wsPoolQueue = new Queue<int>();
 
             CreateASRConnectionPooling();
+
         }
 
         //----------------------------------------------------------------------------------------->
@@ -121,6 +122,7 @@ namespace BackendProxy2ASR
             {
                 m_wsWrapState[index] = WebSocketState.Closed;
             }
+
             );
 
             try
@@ -195,14 +197,15 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         // disconnect from ASR when client disconnect, put wsIndex back to queue
         //----------------------------------------------------------------------------------------->
-        public void DisconnectASR(String sessionID)
+        public async Task DisconnectASR(String sessionID)
         {
             if (m_sessionID2wsPoolIndex.ContainsKey(sessionID) == true)
             {
                 var wsIndex = m_sessionID2wsPoolIndex[sessionID];
-                SendEndStream(sessionID);
+                await SendEndStream(sessionID);
                 m_wsPoolQueue.Enqueue(wsIndex);
                 _logger.Information("DisconnectASR: sessionID = " + sessionID);
+
             }
             else
             {
@@ -213,7 +216,7 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         // send binary data to ASR engine
         //----------------------------------------------------------------------------------------->
-        public void SendStartStream(String sessionID)
+        public async void SendStartStream(String sessionID)
         {
             if (m_sessionID2wsPoolIndex.ContainsKey(sessionID) == true)
             {
@@ -222,7 +225,7 @@ namespace BackendProxy2ASR
                 //----------------------------------------------->
                 byte[] start = new byte[1];
                 start[0] = 0;
-                SendBinaryData(sessionID, start);
+                await SendBinaryData(sessionID, start);
                 //m_sessionID2wsWrap[sessionID].SendBytes(start);
 
                 _logger.Information("start pkt sent to start stream: sessionID = " + sessionID);
@@ -236,7 +239,7 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         // send binary data to ASR engine
         //----------------------------------------------------------------------------------------->
-        public void SendEndStream(String sessionID)
+        public async Task SendEndStream(String sessionID)
         {
             if (m_sessionID2wsPoolIndex.ContainsKey(sessionID) == true)
             {
@@ -245,7 +248,7 @@ namespace BackendProxy2ASR
                 //----------------------------------------------->
                 byte[] end = new byte[1];
                 end[0] = 1;
-                SendBinaryData(sessionID, end);
+                await SendBinaryData(sessionID, end);
                 //m_sessionID2wsWrap[sessionID].SendBytes(end);
 
                 _logger.Information("end pkt sent to end stream: sessionID = " + sessionID);
@@ -259,7 +262,7 @@ namespace BackendProxy2ASR
         //----------------------------------------------------------------------------------------->
         // send binary data to ASR engine
         //----------------------------------------------------------------------------------------->
-        public void SendBinaryData(String sessionID, byte[] data)
+        public async Task SendBinaryData(String sessionID, byte[] data)
         {
             if (m_sessionID2wsPoolIndex.ContainsKey(sessionID) == true)
             {
@@ -275,11 +278,12 @@ namespace BackendProxy2ASR
                         _logger.Information("ASR state: " + wsw.GetWebSocketState().ToString());
                         _logger.Error("ASR Websocket is not open.");
                         m_wsWrapState[wsIndex] = wsw.GetWebSocketState();
-                        wsw.Disconnect();
+                        await wsw.Disconnect();
+
                     }
                     else
                     {
-                        wsw.SendBytes(data);
+                        await wsw.SendBytes(data);
                     }
                     
                 }
