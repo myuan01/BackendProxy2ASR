@@ -405,6 +405,7 @@ namespace BackendProxy2ASR
             }
 
             _logger.Error($"Unable to receive pong from client for SessionID = {session_id}. Disconnecting from client...");
+            await m_commASR.DisconnectASR(session_id);
             sock.Close();
         }
     }

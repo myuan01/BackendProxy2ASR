@@ -92,7 +92,7 @@ namespace BackendProxy2ASR
                     m_wsWrapPoolDictionary[i] = wsw;
                     _logger.Information("InitASRWebSocket::ConnectASR(" + i + "): uri = " + uri);
                     m_wsPoolQueue.Enqueue(i);
-                    _logger.Information("ASRWebSocket: " + i + " has been added into pooling queue");
+                    _logger.Information("ASRWebSocket " + i + " has been added into pooling queue");
                 }
                 else
                 {
@@ -168,7 +168,7 @@ namespace BackendProxy2ASR
 
                         wsw.OnMessage((msg, sock) =>
                             {
-                                _logger.Information("EngineASR -> CommASR: " + msg + "  [sessionID = " + sessionID);
+                                _logger.Information("EngineASR -> CommASR: " + msg + "  [sessionID = " + sessionID + "]");
                                 if (msg.Length == 0) return;
                                 ProxySocket.Send(msg);
                                 InsertPredictionToDB(msg, sessionID);
