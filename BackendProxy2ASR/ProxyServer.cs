@@ -5,7 +5,11 @@ using System.Threading.Tasks;
 using System.Threading;
 using Fleck;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Microsoft.Extensions.Configuration;
+using Jose;
+using System.Security.Cryptography;
+using System.Net;
 
 using Serilog;
 using database_and_log;
@@ -20,12 +24,6 @@ namespace BackendProxy2ASR
         public int sequence_id { get; set; }
     }
 
-    class UserInfo
-    {
-        public string username { get; set; }
-        public string password { get; set; }
-    }
-
     class ProxyASR
     {
         private readonly int m_proxyPort;
@@ -33,6 +31,9 @@ namespace BackendProxy2ASR
         private readonly int m_asrPort;
         private readonly int m_sampleRate;
         private readonly bool m_toAuthenticate;
+        private readonly string m_authMethod;
+        private readonly string m_authDomain;
+        private readonly string m_authAudience;
 
         private List<IWebSocketConnection> m_allSockets;
         private Dictionary<String, IWebSocketConnection> m_sessionID2sock;
@@ -64,6 +65,9 @@ namespace BackendProxy2ASR
             m_asrPort = Int32.Parse(config.GetSection("Proxy")["asrPort"]);
             m_sampleRate = Int32.Parse(config.GetSection("Proxy")["samplerate"]);
             m_toAuthenticate = ConfigurationBinder.GetValue<bool>(config.GetSection("Auth"), "ToAuthenticate", true);
+            m_authMethod = ConfigurationBinder.GetValue<string>(config.GetSection("Auth"), "AuthMethod", "");
+            m_authDomain = ConfigurationBinder.GetValue<string>(config.GetSection("Auth"), "Auth0Domain", "");
+            m_authAudience = ConfigurationBinder.GetValue<string>(config.GetSection("Auth"), "Audience", "");
 
             m_allSockets = new List<IWebSocketConnection>();
             m_sessionID2sock = new Dictionary<String, IWebSocketConnection>();
@@ -80,7 +84,7 @@ namespace BackendProxy2ASR
         {
             get { return m_allSockets; }
         }
-        
+
 
         public void Start()
         {
@@ -137,7 +141,7 @@ namespace BackendProxy2ASR
                 if (m_toAuthenticate)
                 {
                     string authHeader = sock.ConnectionInfo.Headers["Authorization"];
-                    is_user = IsUser(authHeader);
+                    is_user = IsUser(authHeader, m_authMethod);
                 }
                 else
                 {
@@ -329,7 +333,7 @@ namespace BackendProxy2ASR
 
             var session_id = m_sock2sessionID[sock];
             //var wsIndex = m_sessionID2ASRSocket[session_id];
-            
+
             try
             {
                 //_logger.Information("Sending binary data for session " + session_id + "....");
@@ -358,9 +362,9 @@ namespace BackendProxy2ASR
         // Helper function that authenticates a user using value from
         // "Authorization" field in HTTP header
         //--------------------------------------------------------------------->
-        private bool IsUser(string authString)
+        private bool IsUser(string authString, string authMethod)
         {
-            if (authString.Contains("Basic"))
+            if (authMethod == "database" && authString.ToLower().Contains("basic"))
             {
                 string encodedCredentials = authString.Split(' ')[1];
                 string[] decodedCredentials = Encoding.UTF8
@@ -372,6 +376,64 @@ namespace BackendProxy2ASR
                 bool is_user = m_databaseHelper.Is_User(username, password);
 
                 return is_user;
+            }
+            else if (authMethod == "auth0" && authString.ToLower().Contains("bearer"))
+            {
+                try
+                {
+                    // https://github.com/dvsekhvalnov/jose-jwt#two-phase-validation
+                    string token = authString.Split(' ')[1];
+
+                    using (WebClient wc = new WebClient())
+                    {
+                        //step 0: Get public key
+                        var json = wc.DownloadString($"https://{m_authDomain}/.well-known/jwks.json");
+                        JObject jsonObject = JObject.Parse(json);
+
+                        // step 1a: get headers info
+                        var headers = Jose.JWT.Headers(token);
+
+                        // step 1b: lookup validation key based on header info
+                        JObject jwk = new JObject();
+                        foreach (JObject item in jsonObject["keys"])
+                        {
+                            if ((string)item["kid"] == (string)headers["kid"])
+                            {
+                                jwk = item;
+                            }
+                        }
+
+                        // step 1c: load the JWK data into an RSA key
+                        RSACryptoServiceProvider key = new RSACryptoServiceProvider();
+                        key.ImportParameters(new RSAParameters
+                        {
+                            Modulus = Base64Url.Decode((string)jwk["n"]),
+                            Exponent = Base64Url.Decode((string)jwk["e"])
+                        });
+
+                        var payload = JObject.Parse(Jose.JWT.Decode(token, key));
+
+                        // verify audience and issuer
+                        string audience = (string)payload["aud"];
+                        string issuer = (string)payload["iss"];
+
+                        if (audience != this.m_authAudience)
+                        {
+                            throw new Exception("Incorrect audience");
+                        }
+                        if (issuer != $"https://{this.m_authDomain}/")
+                        {
+                            throw new Exception("Incorrect issuer");
+                        }
+
+                        return true;
+                    }
+                }
+                catch (System.Exception exception)
+                {
+                    _logger.Error(exception, exception.Message);
+                    return false;
+                }
             }
 
             return false;
