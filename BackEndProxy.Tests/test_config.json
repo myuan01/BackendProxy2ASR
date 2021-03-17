@@ -5,13 +5,17 @@
     },
     "Database": {
         "ToConnect": true,
-        "Host": "10.2.117.32",
+        "Host": "localhost",
         "Username": "postgres",
         "Password": "password",
         "Database": "ai_3_staging"
     },
     "Auth": {
-        "ToAuthenticate": false
+        "AuthURL": "https://dev-pjwmc6ay.us.auth0.com/oauth/token",
+        "ClientID": "2kiiWMbGvqnDWgBhg7V3Fc430Aqe1JqF",
+        "ClientSecret": "8RGi_SXnCxmn3dGAbNMXgeG-eI6j46G6twuBIGZf3oqVQforkeg8VYI7D16iVQl3",
+        "Audience": "ai3-asr",
+        "GrantType": "client_credentials"
     },
     "Serilog": {
         "Using": [

@@ -6,10 +6,12 @@ using Xunit;
 using Xunit.Abstractions;
 using BackendProxy2ASR;
 using Microsoft.Extensions.Configuration;
-using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using System.Net.WebSockets;
+using System.Net.Http;
+using System.Text;
 
 namespace BackEndProxy.Tests
 {
@@ -47,30 +49,30 @@ namespace BackEndProxy.Tests
             this.databaseHelper.Close();
         }
     }
+
     public class BackEndProxy_IntegrationTesting : IClassFixture<BackEndProxyFixture>
     {
         BackEndProxyFixture fixture;
+        private string proxyServerUrl;
         private readonly ITestOutputHelper output;
         public BackEndProxy_IntegrationTesting(BackEndProxyFixture fixture, ITestOutputHelper output)
         {
             this.fixture = fixture;
             this.output = output;
+
+            var proxyPort = Int32.Parse(this.fixture.config.GetSection("Proxy")["proxyPort"]);
+            var proxyHost = this.fixture.config.GetSection("Proxy")["proxyHost"];
+            this.proxyServerUrl = $"ws://{proxyHost}:{proxyPort}";
         }
 
         [Fact]
         public void SimpleTest()
         {
             NpgsqlDataReader playbackReader = this.fixture.databaseHelper.GetPlayback("simple_playback");
-
-            var proxyPort = Int32.Parse(this.fixture.config.GetSection("Proxy")["proxyPort"]);
-            var proxyHost = this.fixture.config.GetSection("Proxy")["proxyHost"];
-
-            // assumes there's a proxy server running locally
-            string url = $"ws://{proxyHost}:{proxyPort}";
             bool endTest = false;
             string asrfullResult = "";
 
-            WebSocketWrapper wsw = WebSocketWrapper.Create(url);
+            WebSocketWrapper wsw = WebSocketWrapper.Create(this.proxyServerUrl);
 
             Task task = new Task(async () =>
             {
@@ -136,12 +138,7 @@ namespace BackEndProxy.Tests
         {
             NpgsqlDataReader playbackReader = this.fixture.databaseHelper.GetPlayback("cb0bd39c-9482-4e71-b81a-cdf334c5c883");
 
-            var proxyPort = Int32.Parse(this.fixture.config.GetSection("Proxy")["proxyPort"]);
-            var proxyHost = this.fixture.config.GetSection("Proxy")["proxyHost"];
-
-            // assumes there's a proxy server running locally
-            string url = $"ws://{proxyHost}:{proxyPort}";
-            WebSocketWrapper wsw = WebSocketWrapper.Create(url);
+            WebSocketWrapper wsw = WebSocketWrapper.Create(this.proxyServerUrl);
 
             string[] expectedResults = { "吉祥如意", "四海增辉", "睫毛", "六六大顺", "新年欢乐", "有志竟成", "飞黄腾达" };
             List<string> response = new List<string>();
@@ -199,6 +196,213 @@ namespace BackEndProxy.Tests
             while (!task.IsCompleted) { }
 
             Assert.Equal(expectedResults, response);
+        }
+    }
+
+    public class BackEndProxy_AuthTesting : IClassFixture<BackEndProxyFixture>
+    {
+        BackEndProxyFixture fixture;
+        private string proxyServerUrl;
+        private readonly ITestOutputHelper output;
+        public BackEndProxy_AuthTesting(BackEndProxyFixture fixture, ITestOutputHelper output)
+        {
+            this.fixture = fixture;
+            this.output = output;
+
+            var proxyPort = Int32.Parse(this.fixture.config.GetSection("Proxy")["proxyPort"]);
+            var proxyHost = this.fixture.config.GetSection("Proxy")["proxyHost"];
+            this.proxyServerUrl = $"ws://{proxyHost}:{proxyPort}";
+        }
+
+        [Fact]
+        public void TestWithNoCredentials()
+        {
+            List<string> response = new List<string>();
+            string expected = "Fail to authenticate user. Closing socket connection.";
+
+            WebSocketWrapper wsw = WebSocketWrapper.Create(this.proxyServerUrl);
+
+            wsw.OnMessage((msg, sock) =>
+            {
+                this.output.WriteLine(msg);
+                response.Add(msg);
+            });
+
+            Task task = Task.Run(async () =>
+            {
+                wsw.Connect();
+                await Task.Delay(3000);
+
+                if (wsw.GetWebSocketState() == WebSocketState.Open)
+                {
+                    await wsw.Disconnect();
+                }
+            });
+
+            task.Wait();
+            Assert.Equal(response[0], expected);
+        }
+
+        [Fact]
+        public void DatabaseTestWithCorrectCredentials()
+        {
+            Dictionary<string, string> headerOptions = new Dictionary<string, string>();
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes("username_1:test_password_1");
+            headerOptions["Authorization"] = $"Basic {System.Convert.ToBase64String(plainTextBytes)}";
+            string response = "";
+
+            WebSocketWrapper wsw = WebSocketWrapper.Create(this.proxyServerUrl, headerOptions);
+
+            wsw.OnMessage((msg, sock) =>
+            {
+                this.output.WriteLine(msg);
+                response = msg;
+            });
+
+            Task task = Task.Run(async () =>
+            {
+                wsw.Connect();
+                await Task.Delay(3000);
+                if (wsw.GetWebSocketState() == WebSocketState.Open)
+                {
+                    await wsw.Disconnect();
+                }
+            });
+
+            task.Wait();
+            Assert.Equal("0", response[0].ToString());
+            Assert.Contains("session_id", response);
+        }
+
+        [Fact]
+        public void DatabaseTestWithWrongCredentials()
+        {
+            Dictionary<string, string> headerOptions = new Dictionary<string, string>();
+            var plainTextBytes = System.Text.Encoding.UTF8.GetBytes("wrong_user:wrong_password");
+            headerOptions["Authorization"] = $"Basic {System.Convert.ToBase64String(plainTextBytes)}";
+            List<string> response = new List<string>();
+            string expected = "Fail to authenticate user. Closing socket connection.";
+
+            WebSocketWrapper wsw = WebSocketWrapper.Create(this.proxyServerUrl, headerOptions);
+
+            wsw.OnMessage((msg, sock) =>
+            {
+                this.output.WriteLine(msg);
+                response.Add(msg);
+            });
+
+            Task task = Task.Run(async () =>
+            {
+                wsw.Connect();
+                await Task.Delay(3000);
+
+                if (wsw.GetWebSocketState() == WebSocketState.Open)
+                {
+                    await wsw.Disconnect();
+                }
+            });
+
+            task.Wait();
+            Assert.Equal(response[0], expected);
+        }
+
+        [Fact]
+        public async void Auth0TestWithCorrectCredentials()
+        {
+            Dictionary<string, string> headerOptions = new Dictionary<string, string>();
+
+            var authSection = this.fixture.config.GetSection("Auth");
+            string authURL = authSection["AuthURL"];
+            string clientId = authSection["ClientID"];
+            string clientSecret = authSection["ClientSecret"];
+            string audience = authSection["Audience"];
+            string grantType = authSection["GrantType"];
+            string content = $@"{{
+                ""client_id"":""{clientId}"",
+                ""client_secret"":""{clientSecret}"",
+                ""audience"":""{audience}"",
+                ""grant_type"":""{grantType}""
+                }}
+            ";
+
+            // get access token from Auth0 authentication server
+            HttpClient client = new HttpClient();
+            var stringContent = new StringContent(content, Encoding.UTF8, "application/json");
+
+            HttpResponseMessage authResponse = await client.PostAsync(authURL, stringContent);
+            authResponse.EnsureSuccessStatusCode();
+            string responseBody = await authResponse.Content.ReadAsStringAsync();
+            string accessToken = (string)JObject.Parse(responseBody)["access_token"];
+
+            // test proxy server
+            headerOptions["Authorization"] = $"Bearer {accessToken}";
+            string response = "";
+
+            WebSocketWrapper wsw = WebSocketWrapper.Create(this.proxyServerUrl, headerOptions);
+
+            wsw.OnMessage((msg, sock) =>
+            {
+                this.output.WriteLine(msg);
+                response = msg;
+            });
+
+            Task task = Task.Run(async () =>
+            {
+                wsw.Connect();
+                await Task.Delay(3000);
+                if (wsw.GetWebSocketState() == WebSocketState.Open)
+                {
+                    await wsw.Disconnect();
+                }
+            });
+
+            task.Wait();
+            Assert.NotEmpty(response);
+            Assert.Equal("0", response[0].ToString());
+            Assert.Contains("session_id", response);
+        }
+
+        [Fact]
+        public void Auth0TestWithWrongCredentials()
+        {
+            Dictionary<string, string> headerOptions = new Dictionary<string, string>();
+
+            // random JWT token encoded using RS256 from https://jwt.io/
+            string accessToken = "eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxM"
+                + "jM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWUsImlhdCI6MTUxNjIzOTAyMn0."
+                + "POstGetfAytaZS82wHcjoTyoqhMyxXiWdR7Nn7A29DNSl0EiXLdwJ6xC6AfgZWF1bOsS_TuYI3OG85"
+                + "AmiExREkrS6tDfTQ2B3WXlrr-wp5AokiRbz3_oB4OxG-W9KcEEbDRcZc0nH3L7LzYptiy1PtAylQGx"
+                + "HTWZXtGz4ht0bAecBgmpdgXMguEIcoqPJ1n3pIWk_dUZegpqx0Lka21H6XxUTxiy8OcaarA8zdnPUnV"
+                + "6AmNP3ecFawIFYdvJB_cm-GvpCSbr8G8y_Mllj8f4x9nBH8pQux89_6gUY618iYv7tuPWBFfEbLxtF"
+                + "2pZS6YC1aSfLQxeNe8djT9YjpvRZA";
+
+            // test proxy server
+            headerOptions["Authorization"] = $"Bearer {accessToken}";
+            WebSocketWrapper wsw = WebSocketWrapper.Create(this.proxyServerUrl, headerOptions);
+
+            List<string> response = new List<string>();
+            string expected = "Fail to authenticate user. Closing socket connection.";
+
+            wsw.OnMessage((msg, sock) =>
+            {
+                this.output.WriteLine(msg);
+                response.Add(msg);
+            });
+
+            Task task = Task.Run(async () =>
+            {
+                wsw.Connect();
+                await Task.Delay(3000);
+
+                if (wsw.GetWebSocketState() == WebSocketState.Open)
+                {
+                    await wsw.Disconnect();
+                }
+            });
+
+            task.Wait();
+            Assert.NotEmpty(response);
+            Assert.Equal(response[0], expected);
         }
     }
 }
