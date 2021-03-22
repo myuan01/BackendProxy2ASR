@@ -3,7 +3,14 @@
         "proxyPort": 8008,
         "asrIP": "127.0.0.1",
         "asrPort": 7000,
-        "samplerate": 16000
+        "samplerate": 16000,
+        "maxConnection": 1
+    },
+    "DummyServer": {
+        "usingDummy": false,
+        "dummyAsrIP": "localhost",
+        "dummyAsrPort": 7100,
+        "maxConnection": 7
     },
     "Database": {
         "ToConnect": true,
@@ -13,7 +20,10 @@
         "Database": "ai_3_staging"
     },
     "Auth": {
-        "ToAuthenticate": false
+        "ToAuthenticate": true,
+        "AuthMethod": "auth0",
+        "Auth0Domain": "dev-pjwmc6ay.us.auth0.com",
+        "Audience": "ai3-asr"
     },
     "Serilog": {
         "Using": [

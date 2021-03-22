@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using database_and_log;
 using Serilog;
+using System.Collections.Generic;
 using Microsoft.Extensions.Configuration;
 
 
@@ -26,9 +27,16 @@ namespace BackendProxy2ASR
 
         private ILogger _logger = LogHelper.GetLogger<WebSocketWrapper>();
 
-        protected WebSocketWrapper(string uri)
+        protected WebSocketWrapper(string uri, Dictionary<string, string> headers)
         {
             _ws = new ClientWebSocket();
+            if (headers != null)
+            {
+                foreach (KeyValuePair<string, string> entry in headers)
+                {
+                    _ws.Options.SetRequestHeader(entry.Key, entry.Value);
+                }
+            }
             _ws.Options.KeepAliveInterval = TimeSpan.Zero;
             _ws.Options.RemoteCertificateValidationCallback = delegate { return true; };
             _uri = new Uri(uri);
@@ -39,9 +47,9 @@ namespace BackendProxy2ASR
         // Creates a new instance.
         //      uri: The URI of the WebSocket server
         //----------------------------------------------------------------------------------------->
-        public static WebSocketWrapper Create(string uri)
+        public static WebSocketWrapper Create(string uri, Dictionary<string, string> headers = null)
         {
-            return new WebSocketWrapper(uri);
+            return new WebSocketWrapper(uri, headers);
         }
 
         public WebSocketState GetWebSocketState()
