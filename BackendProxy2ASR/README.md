@@ -27,7 +27,7 @@ $ docker load --input [asrfile].tar
 $ docker images
 
 REPOSITORY          TAG                 IMAGE ID            CREATED             SIZE
-[asrfile]           X.X										1 second ago         XX GB
+[asrfile]           X.X			                    1 second ago         XX GB
 ```
 * Start Docker container 
     * [Linux](https://docs.docker.com/engine/reference/commandline/start/) 
