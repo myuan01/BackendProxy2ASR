@@ -79,7 +79,7 @@ python deploy.py BackendProxy2ASR.zip config.json
 ```
 
 ##	Client Simulator
-A light-weight windows-based client simluator can be found [here]().
+A light-weight windows-based client simluator can be found [here](https://github.com/myuan01/DemoFEWs).
  * Open `DemoFEWs.sln` with Visual Studio
  * Install required packages
  * Change `url` in `Main` to correct Backend Proxy address and port
