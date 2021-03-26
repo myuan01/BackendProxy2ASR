@@ -6,7 +6,7 @@
 3)	[Start Backend Proxy Service](#Start-Backend-Proxy-Service)
 4)	[Authentication](#Authentication)
 5)	[Client Simulator](#Client-Simulator)
-6)	[ASR Engine Simulator](#Start-ASR-Simulator)
+6)	[ASR Engine Simulator](#ASR-Engine-Simulator)
 7)	[Reporting](#Reporting)
 8)  [Database](#Database)
 
@@ -57,15 +57,18 @@ Configuration file `config.json` contains below items:
    * "Database": Database name
 
 *  **"Auth"**:
-*  "ToAuthenticate": Whether enable authentication check
+   * "ToAuthenticate": Whether enable authentication check
+   * "AuthMethod": Type of client authentication: `database` or `auth0`
+   * "Auth0Domain"
+   * "Audience"
 
-*  **"Serilog"**: Please find in Reporting session
+*  **"Serilog"**: Logging config
 
 ## Authentication
 
 Two types of client authentication are available: `database` and `auth0`. To set the type of authentication, update the `Auth`.`AuthMethod` field in the config file.
 
-### Database
+### Using Database
 
 Authentication using the `database` method uses a simple username and password system supported by the [pgcrypto](https://www.postgresql.org/docs/9.4/pgcrypto.html) extension in PostgreSQL.
 
@@ -101,7 +104,7 @@ var plainTextBytes = System.Text.Encoding.UTF8.GetBytes("username:password");
 headerOptions["Authorization"] = $"Basic {System.Convert.ToBase64String(plainTextBytes)}";
 ```
 
-### Auth0
+### Using Auth0
 
 Client authentication using [Auth0](https://auth0.com/) is also supported. A access token will have to obtained by the client that is included in the `Authorization` field of the websocket connection HTTP header in the following format:
 
@@ -126,8 +129,6 @@ headerOptions["Authorization"] = $"Bearer {accessToken}";
 ```
 
 For client authentication using Auth0, `Auth`.`Auth0Domain` and `Auth`.`Audience` fields are to be included in the config.
-
-
 
 ##	Start Backend Proxy Service
 ### Windows
@@ -156,10 +157,10 @@ A light-weight windows-based client simluator can be found [here](https://github
 
 An ASR Engine simulator implemented in Python can be found at this [repository](https://github.com/kw01sg/websocket).
 
-## Database
-
-A PostgreSQL database for this application is setup using docker in another code repository [here](https://github.com/kw01sg/ai_toolbox_db).
-
 ## Reporting
 
 A web application used for simple statistics reporting of the `asr_audio_stream_info` table in the database is available at this repository: [usage_api](https://github.com/kw01sg/usage_api)
+
+## Database
+
+A PostgreSQL database for this application is setup using docker in another code repository [here](https://github.com/kw01sg/ai_toolbox_db).
